@@ -486,7 +486,14 @@ app.get("/card/:event_id", async (req, res) => {
     
     const account = await getAccount(event.account_id);
     const balance = account.balance;
-    const card_number = account.account_number;
+    const card_number = account.account_number.match(/.{1,4}/g).join(' ');
+
+    const deadline = new Date(event.deadline);
+    const expiry_date = deadline.getMonth().toString().padStart(2, '0') + ' / ' + deadline.getFullYear().toString().substr(2);
+
+    const cvv = getRandomInt(999).toString().padStart(3, '0');
+
+    const name = event.name;
 
     res.status(200).json({
         balance,
@@ -496,9 +503,3 @@ app.get("/card/:event_id", async (req, res) => {
         name
     });
 });
-
-/* APIS FALTANTES */
-
-
-
-// todos los contactos
