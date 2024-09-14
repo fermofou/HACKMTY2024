@@ -43,3 +43,21 @@ Content-Type: application/json
   "author": "Luis",
   "content": "Hola como estan 123?"
 }
+
+###
+POST http://127.0.0.1:3000/poll
+Content-Type: application/json
+
+{
+  "event_id": "66e60dc24645973fb256c706",
+  "author_id": "1",
+  "author": "Luis",
+  "title": "Do you want to go first class?",
+  "options": [{
+    "name": "Yes",
+    "cost": 50000
+  },{
+    "name": "No",
+    "cost": 0
+  }]
+}

@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import Event from "./schemas/EventSchema.js";
 import Message from "./schemas/MessageSchema.js";
+import Poll from "./schemas/PollSchema.js";
 
 dotenv.config();
 const app = express();
@@ -302,8 +303,6 @@ app.post("/chat", async (req, res) => {
     const author_id = req.body.author_id;
     const author = req.body.author;
     const text = req.body.content;
-    
-    console.log(author_id);
 
     const message = new Message({
         type: "chat",
@@ -322,9 +321,41 @@ app.post("/chat", async (req, res) => {
     res.sendStatus(200);
 });
 
+// mandar poll
+app.post("/poll", async (req, res) => {
+    const event_id = req.body.event_id;
+    const author_id = req.body.author_id;
+    const author = req.body.author;
+    const title = req.body.title;
+    const options = req.body.options;
+
+    const poll = new Poll({
+        title,
+        options: options.map(option => ({
+            ...option,
+            count: 0
+        }))
+    });
+
+    const message = new Message({
+        type: "poll",
+        content: {
+            author,
+            author_id,
+            poll
+        }
+    });
+
+    const event = await Event.findById(event_id).exec();
+    event.chat.push(message);
+
+    event.save();
+
+    res.sendStatus(200);
+});
+
 /* APIS FALTANTES */
 
-// mandar poll
 // contestar poll
 // checar todos los mensajes
 
