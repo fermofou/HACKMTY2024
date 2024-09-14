@@ -180,3 +180,16 @@ app.post("/savings", async (req, res) => {
     message: "Event created successfuly",
   });
 });
+
+/* APIS FALTANTES */
+
+// mandar chat
+// mandar poll
+// contestar poll
+// checar todos los mensajes
+
+// individual event
+//  your contribution
+//  all contributions
+
+// get card details
