@@ -49,9 +49,32 @@ export const getCurrentDate = () => {
 };
 
 const checkTransfer = async (transferId) => {
-  // Implement the checkTransfer function logic here
-  console.log(`Checking transfer with ID: ${transferId}`);
-  // Add your logic to check the transfer status or any other operation
+  const API_KEY = process.env.CAPITAL_ONE_API_KEY;
+  const API_URL = `http://api.nessieisreal.com/transfers/${transferId}?key=${API_KEY}`;
+
+  while (true) {
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const status = data.status;
+
+      if (status === "completed") {
+        return "Transfer created successfully";
+      } else if (status === "cancelled") {
+        return "Transaction unsuccessful";
+      }
+
+      // Wait for 30 seconds before checking again
+      await new Promise((resolve) => setTimeout(resolve, 30000));
+    } catch (error) {
+      console.error("Error during fetch operation:", error);
+      throw error;
+    }
+  }
 };
 
 // Routes for events
@@ -136,39 +159,47 @@ body de /transfer:
 }
 
 /*/
+
 app.post("/transfer", async (req, res) => {
-  const userIdAcc = req.body.userIdAcc;
-  const accountPay = req.body.accountPayId;
-  const amount = req.body.amount;
+  const { userIdAcc, accountPayId, amount } = req.body;
   const date = getCurrentDate();
 
-  const response = await fetch(
-    `${API_BASE}/accounts/${userIdAcc}/transfers?key=${process.env.CAPITAL_ONE_API_KEY}`,
-    {
-      method: "POST",
-      headers: {
-        ContentType: "application/json",
-      },
-      body: JSON.stringify({
-        medium: "balance",
-        payee_id: accountPay,
-        transaction_date: date,
-        status: "pending",
-        amount: amount,
-        description: "pago",
-      }),
-    }
-  );
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-  const data = await response.json();
-  const transferId = data.objectCreated._id;
-  await checkTransfer(transferId);
+  try {
+    const response = await fetch(
+      `${API_BASE}/accounts/${userIdAcc}/transfers?key=${process.env.CAPITAL_ONE_API_KEY}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          medium: "balance",
+          payee_id: accountPayId,
+          transaction_date: date,
+          status: "pending",
+          amount: amount,
+          description: "pago",
+        }),
+      }
+    );
 
-  res.status(200).json({
-    message: "Transfer created successfuly",
-  });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const transferId = data._id;
+
+    // Call the checkTransfer function with the extracted _id
+    const transferStatusMessage = await checkTransfer(transferId);
+
+    res.status(200).json({
+      message: transferStatusMessage,
+    });
+  } catch (error) {
+    console.error("Error during fetch operation:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.post("/savings", async (req, res) => {
