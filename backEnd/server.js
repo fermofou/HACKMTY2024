@@ -161,13 +161,15 @@ cuenta que pagará:
 body de /transfer:
 {
     "userIdAcc": "66e5fb989683f20dd5189bc6",
-    "accountPayId": "66e5ee429683f20dd5189bb5",
+    "event_id": "eventMongoId",
     "amount": 100
 }
 
 /*/
 app.post("/transfer", async (req, res) => {
   const date = getCurrentDate();
+  const event_id = req.body.event_id;
+  const account_id = event_id.account_id;
   try {
     const response = await fetch(
       `${API_BASE}/accounts/${req.body.userIdAcc}/transfers?key=${process.env.CAPITAL_ONE_API_KEY}`,
