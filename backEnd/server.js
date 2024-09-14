@@ -47,6 +47,12 @@ export const getCurrentDate = () => {
   return `${year}-${month}-${day}`;
 };
 
+const checkTransfer = async (transferId) => {
+  // Implement the checkTransfer function logic here
+  console.log(`Checking transfer with ID: ${transferId}`);
+  // Add your logic to check the transfer status or any other operation
+};
+
 // Routes for events
 app.post("/event", async (req, res) => {
   // crear tarjeta
@@ -136,7 +142,7 @@ app.post("/transfer", async (req, res) => {
   const date = getCurrentDate();
 
   const response = await fetch(
-    `http://api.nessieisreal.com/accounts/${userIdAcc}/transfers?key=${process.env.CAPITAL_ONE_API_KEY}`,
+    `${API_BASE}/accounts/${userIdAcc}/transfers?key=${process.env.CAPITAL_ONE_API_KEY}`,
     {
       method: "POST",
       headers: {
@@ -152,6 +158,12 @@ app.post("/transfer", async (req, res) => {
       }),
     }
   );
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const data = await response.json();
+  const transferId = data.objectCreated._id;
+  await checkTransfer(transferId);
 
   res.status(200).json({
     message: "Transfer created successfuly",
