@@ -49,70 +49,39 @@ export const getCurrentDate = () => {
   return `${year}-${month}-${day}`;
 };
 
-const checkTransfer = async (transferId) => {
-  while (true) {
-    try {
-      const response = await fetch(
-        `${API_BASE}/transfers/${transferId}?key=${process.env.CAPITAL_ONE_API_KEY}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      const status = data.status;
-
-      if (status === "completed") {
-        return "Transfer created successfully";
-      } else if (status === "cancelled") {
-        return "Transaction unsuccessful";
-      }
-
-      // Wait for 30 seconds before checking again
-      await new Promise((resolve) => setTimeout(resolve, 30000));
-    } catch (error) {
-      console.error("Error during fetch operation:", error);
-      throw error;
-    }
-  }
+const getAccountBalance = async (account_id) => {
+  const response = await fetch(
+    `${API_BASE}/accounts/${account_id}?key=${process.env.CAPITAL_ONE_API_KEY}`
+  );
+  const data = await response.json();
+  return data.balance;
 };
 
-
-const getAccountBalance = async (account_id) => {
-    const response = await fetch(`${API_BASE}/accounts/${account_id}?key=${process.env.CAPITAL_ONE_API_KEY}`);
-    const data = await response.json();
-    return data.balance;
-}
-
 app.get("/events_savings", async (req, res) => {
-    const account_id = req.query.account_id;
-    
-    // Get all events
-    const events = await Event.find({
-        "participants.account_id": account_id
-    }).exec();
-    
-    events.sort((a, b) => a.deadline < b.deadline);
+  const account_id = req.query.account_id;
 
-    const mappedEvents = await Promise.all(events.map(async (event) => {
-        const amount = await getAccountBalance(event.account_id);
-        const type = event.savings == undefined ? "event" : "savings";
-        return {
-            balance: amount,
-            type,
-            deadline: event.deadline,
-            name: event.name,
-            participantCount: event.participants.length,
-            percentage: Math.round((amount / event.goal) * 100)
-        };
-    }));
-    res.status(200).json(mappedEvents);
+  // Get all events
+  const events = await Event.find({
+    "participants.account_id": account_id,
+  }).exec();
+
+  events.sort((a, b) => a.deadline < b.deadline);
+
+  const mappedEvents = await Promise.all(
+    events.map(async (event) => {
+      const amount = await getAccountBalance(event.account_id);
+      const type = event.savings == undefined ? "event" : "savings";
+      return {
+        balance: amount,
+        type,
+        deadline: event.deadline,
+        name: event.name,
+        participantCount: event.participants.length,
+        percentage: Math.round((amount / event.goal) * 100),
+      };
+    })
+  );
+  res.status(200).json(mappedEvents);
 });
 
 // Routes for events
@@ -197,14 +166,11 @@ body de /transfer:
 }
 
 /*/
-
 app.post("/transfer", async (req, res) => {
-  const { userIdAcc, accountPayId, amount } = req.body;
   const date = getCurrentDate();
-
   try {
     const response = await fetch(
-      `${API_BASE}/accounts/${userIdAcc}/transfers?key=${process.env.CAPITAL_ONE_API_KEY}`,
+      `${API_BASE}/accounts/${req.body.userIdAcc}/transfers?key=${process.env.CAPITAL_ONE_API_KEY}`,
       {
         method: "POST",
         headers: {
@@ -212,10 +178,10 @@ app.post("/transfer", async (req, res) => {
         },
         body: JSON.stringify({
           medium: "balance",
-          payee_id: accountPayId,
+          payee_id: req.body.accountPayId,
           transaction_date: date,
           status: "pending",
-          amount: amount,
+          amount: req.body.amount,
           description: "pago",
         }),
       }
@@ -226,19 +192,71 @@ app.post("/transfer", async (req, res) => {
     }
 
     const data = await response.json();
-    const transferId = data._id;
+    console.log("Response data:", data); // Debugging: Log the parsed response data
 
-    // Call the checkTransfer function with the extracted _id
-    const transferStatusMessage = await checkTransfer(transferId);
+    const transferId = data.objectCreated._id;
+    console.log("transferId", transferId);
 
+    // Call the checkTransfer function asynchronously to avoid blocking the response
+    setTimeout(async () => {
+      try {
+        // Await the async function checkTransfer
+        const transferStatusMessage = await checkTransfer(transferId);
+        console.log(`Transfer ID ${transferId}: ${transferStatusMessage}`);
+      } catch (error) {
+        console.error(
+          `Error checking transfer status for ID ${transferId}:`,
+          error
+        );
+      }
+    }, 45000); // Wait for 45 seconds
+
+    // Respond immediately to the client
     res.status(200).json({
-      message: transferStatusMessage,
+      message: "Transfer initiated, status will be checked after 45 seconds.",
+      transferId,
     });
   } catch (error) {
-    console.error("Error during fetch operation:", error);
+    console.error("Error during transfer creation:", error);
     res.status(500).json({ error: error.message });
   }
 });
+
+const checkTransfer = async (transferId) => {
+  console.log(
+    "45 seconds have passed. Checking transfer status for transfer ID:",
+    transferId
+  );
+
+  try {
+    const response = await fetch(
+      `${API_BASE}/transfers/${transferId}?key=${process.env.CAPITAL_ONE_API_KEY}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const status = data.status;
+
+    if (status === "executed") {
+      console.log("Transfer created successfully");
+    } else if (status === "cancelled") {
+      console.log("Transaction unsuccessful");
+    } else {
+      console.log("Transaction pending");
+    }
+  } catch (error) {
+    console.error("Error during fetch operation:", error);
+  }
+};
 
 app.post("/savings", async (req, res) => {
   // crear tarjeta
@@ -299,59 +317,59 @@ app.post("/savings", async (req, res) => {
 
 // mandar chat
 app.post("/chat", async (req, res) => {
-    const event_id = req.body.event_id;
-    const author_id = req.body.author_id;
-    const author = req.body.author;
-    const text = req.body.content;
+  const event_id = req.body.event_id;
+  const author_id = req.body.author_id;
+  const author = req.body.author;
+  const text = req.body.content;
 
-    const message = new Message({
-        type: "chat",
-        content: {
-            text,
-            author,
-            author_id
-        }
-    });
+  const message = new Message({
+    type: "chat",
+    content: {
+      text,
+      author,
+      author_id,
+    },
+  });
 
-    const event = await Event.findById(event_id).exec();
-    event.chat.push(message);
+  const event = await Event.findById(event_id).exec();
+  event.chat.push(message);
 
-    event.save();
+  event.save();
 
-    res.sendStatus(200);
+  res.sendStatus(200);
 });
 
 // mandar poll
 app.post("/poll", async (req, res) => {
-    const event_id = req.body.event_id;
-    const author_id = req.body.author_id;
-    const author = req.body.author;
-    const title = req.body.title;
-    const options = req.body.options;
+  const event_id = req.body.event_id;
+  const author_id = req.body.author_id;
+  const author = req.body.author;
+  const title = req.body.title;
+  const options = req.body.options;
 
-    const poll = new Poll({
-        title,
-        options: options.map(option => ({
-            ...option,
-            count: 0
-        }))
-    });
+  const poll = new Poll({
+    title,
+    options: options.map((option) => ({
+      ...option,
+      count: 0,
+    })),
+  });
 
-    const message = new Message({
-        type: "poll",
-        content: {
-            author,
-            author_id,
-            poll
-        }
-    });
+  const message = new Message({
+    type: "poll",
+    content: {
+      author,
+      author_id,
+      poll,
+    },
+  });
 
-    const event = await Event.findById(event_id).exec();
-    event.chat.push(message);
+  const event = await Event.findById(event_id).exec();
+  event.chat.push(message);
 
-    event.save();
+  event.save();
 
-    res.sendStatus(200);
+  res.sendStatus(200);
 });
 
 /* APIS FALTANTES */
