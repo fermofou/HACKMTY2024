@@ -1,10 +1,12 @@
-import express from 'express';
+import express, { json } from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv'
 import Event from './schemas/EventSchema.js';
 
 dotenv.config();
 const app = express();
+
+app.use(json());
 
 // Example defining a route in Express
 app.get('/', (req, res) => {
@@ -40,23 +42,24 @@ app.post('/event', async (req, res) => {
     // crear tarjeta
     const accountNumber = generateAccountNumber();
 
-    const response = await fetch(`api.nessieisreal.com/customers/${process.env.VIRTUAL_USER}/accounts?key=${process.env.CAPITAL_ONE_API_KEY}`, {
+    const response = await fetch(`http://api.nessieisreal.com/customers/${process.env.VIRTUAL_USER}/accounts?key=${process.env.CAPITAL_ONE_API_KEY}`, {
         method: "POST",
         headers: {
-            "ContentType": "application/json"
+            "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            "type": "Virtual Card",
+            "type": "Checking",
             "nickname": req.body.name,
             "rewards": 0,
             "balance": 0,
             "account_number": accountNumber
         })
     });
+    const data = await response.json();
 
     // Crear evento
     const event = new Event({
-        account_id: response.objectCreated.account_number,
+        account_id: data.objectCreated.account_number,
         name: req.body.name,
         goal: req.body.goal,
         deadline: req.body.deadline,

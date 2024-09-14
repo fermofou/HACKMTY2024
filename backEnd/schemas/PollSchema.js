@@ -4,7 +4,8 @@ export const pollSchema = new Schema({
   title: String,
   options: [{
     name: String,
-    count: Number
+    count: Number,
+    cost: Number
   }]
 });
 

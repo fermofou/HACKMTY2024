@@ -1,0 +1,8 @@
+POST http://127.0.0.1:3000/event
+Content-Type: application/json
+
+{
+  "name": "Barcelona Trip",
+  "goal": 130000,
+  "deadline": "2024-09-23T13:35:47Z"
+}
