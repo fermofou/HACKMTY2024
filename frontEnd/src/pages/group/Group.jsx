@@ -12,6 +12,7 @@ function Group() {
                 <Link to="/groups">go back</Link>
             </div>
             <Routes>
+                <Route path="" element={<GroupHome />} />
                 <Route path="groupHome" element={<GroupHome />} />
                 <Route path="groupChat" element={<GroupChat />} />
                 <Route path="groupCard" element={<GroupCard />} />

@@ -9,6 +9,7 @@ function App() {
   return (
     <>
       <Routes>
+        <Route path="/" element={<Groups />} />
         <Route path="/groups" element={<Groups />} />
         <Route path="/newEvent" element={<NewEvent />} />
         <Route path="/group/:groupId/*" element={<Group />} />
