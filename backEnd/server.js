@@ -49,12 +49,17 @@ export const getCurrentDate = () => {
 };
 
 const checkTransfer = async (transferId) => {
-  const API_KEY = process.env.CAPITAL_ONE_API_KEY;
-  const API_URL = `http://api.nessieisreal.com/transfers/${transferId}?key=${API_KEY}`;
-
   while (true) {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(
+        `${API_BASE}/transfers/${transferId}?key=${process.env.CAPITAL_ONE_API_KEY}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
