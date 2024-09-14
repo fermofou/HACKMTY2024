@@ -32,3 +32,14 @@ Content-Type: application/json
 ###
 GET http://127.0.0.1:3000/events_savings?account_id=1
 Content-Type: application/json
+
+###
+POST http://127.0.0.1:3000/chat
+Content-Type: application/json
+
+{
+  "event_id": "66e600deba39454998c2ed86",
+  "author_id": "1",
+  "author": "Luis",
+  "content": "Hola como estan 123?"
+}

@@ -77,6 +77,38 @@ const checkTransfer = async (transferId) => {
   }
 };
 
+
+const getAccountBalance = async (account_id) => {
+    const response = await fetch(`${API_BASE}/accounts/${account_id}?key=${process.env.CAPITAL_ONE_API_KEY}`);
+    const data = await response.json();
+    return data.balance;
+}
+
+app.get("/events_savings", async (req, res) => {
+    const account_id = req.query.account_id;
+    
+    // Get all events
+    const events = await Event.find({
+        "participants.account_id": account_id
+    }).exec();
+    
+    events.sort((a, b) => a.deadline < b.deadline);
+
+    const mappedEvents = await Promise.all(events.map(async (event) => {
+        const amount = await getAccountBalance(event.account_id);
+        const type = event.savings == undefined ? "event" : "savings";
+        return {
+            balance: amount,
+            type,
+            deadline: event.deadline,
+            name: event.name,
+            participantCount: event.participants.length,
+            percentage: Math.round((amount / event.goal) * 100)
+        };
+    }));
+    res.status(200).json(mappedEvents);
+});
+
 // Routes for events
 app.post("/event", async (req, res) => {
   // crear tarjeta
@@ -279,6 +311,8 @@ app.post("/chat", async (req, res) => {
     event.chat.push(message);
 
     event.save();
+
+    res.sendStatus(200);
 });
 
 /* APIS FALTANTES */
