@@ -1,0 +1,57 @@
+.groups-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Ocupa toda la altura de la pantalla */
+    width: 100%;
+}
+
+.groups-capital-one-presentation-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #1d4973;
+    padding: 2rem;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* Asegura que el contenedor no se reduzca */
+
+    p {
+        color: var(--text-color-white);
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.groups-create-new-event-container {
+    margin: 1rem;
+    flex-shrink: 0; /* Evita que este contenedor se reduzca */
+}
+
+.groups-create-new-event-container a {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    color: var(--text-color-gray);
+    padding: 0.5rem;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: calc(100% - 2rem); /* Ajusta el ancho, tomando en cuenta los márgenes */
+    text-decoration: none;
+}
+
+.groups-create-new-event-container img {
+    margin-right: 10px;
+    width: 24px;
+    height: 24px;
+}
+
+.events-container {
+    flex-grow: 1; /* Ocupa todo el espacio restante disponible */
+    overflow-y: auto; /* Habilita el desplazamiento vertical */
+    margin: 0 1rem;
+    border-radius: 5px;
+}
+
+.events-container li {
+    list-style: none; /* Elimina los puntos de las listas */
+    margin-bottom: 1rem; /* Espaciado entre las tarjetas de eventos */
+}
