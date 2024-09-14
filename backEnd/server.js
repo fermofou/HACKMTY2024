@@ -2,6 +2,7 @@ import express, { json } from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import Event from "./schemas/EventSchema.js";
+import Message from "./schemas/MessageSchema.js";
 
 dotenv.config();
 const app = express();
@@ -227,9 +228,30 @@ app.post("/savings", async (req, res) => {
   });
 });
 
+// mandar chat
+app.post("/chat", async (req, res) => {
+    const event_id = req.body.event_id;
+    const author_id = req.body.account_id;
+    const author = req.body.author;
+    const text = req.body.content;
+
+    const message = new Message({
+        type: "chat",
+        content: {
+            text,
+            author,
+            author_id
+        }
+    });
+
+    const event = await Event.findById(event_id).exec();
+    event.chat.push(message);
+
+    event.save();
+});
+
 /* APIS FALTANTES */
 
-// mandar chat
 // mandar poll
 // contestar poll
 // checar todos los mensajes

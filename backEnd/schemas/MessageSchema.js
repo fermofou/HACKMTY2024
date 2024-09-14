@@ -4,8 +4,9 @@ import { pollSchema } from './PollSchema.js';
 export const messageSchema = new Schema({
   type: String,
   content: {
-    content: String,
+    text: String,
     author: String,
+    author_id: String,
     poll: pollSchema
   }
 })
