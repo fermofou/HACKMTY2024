@@ -61,3 +61,14 @@ Content-Type: application/json
     "cost": 0
   }]
 }
+
+###
+POST http://127.0.0.1:3000/answer_poll
+Content-Type: application/json
+
+{
+  "event_id": "66e60dc24645973fb256c706",
+  "account_id": "2",
+  "poll_index": 4,
+  "option": 0
+}
