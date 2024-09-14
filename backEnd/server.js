@@ -171,13 +171,15 @@ cuenta que pagará:
 body de /transfer:
 {
     "userIdAcc": "66e5fb989683f20dd5189bc6",
-    "accountPayId": "66e5ee429683f20dd5189bb5",
+    "event_id": "eventMongoId",
     "amount": 100
 }
 
 /*/
 app.post("/transfer", async (req, res) => {
   const date = getCurrentDate();
+  const event_id = req.body.event_id;
+  const account_id = event_id.account_id;
   try {
     const response = await fetch(
       `${API_BASE}/accounts/${req.body.userIdAcc}/transfers?key=${process.env.CAPITAL_ONE_API_KEY}`,
@@ -219,7 +221,7 @@ app.post("/transfer", async (req, res) => {
           error
         );
       }
-    }, 45000); // Wait for 45 seconds
+    }, 60000); // Wait for 45 seconds
 
     // Respond immediately to the client
     res.status(200).json({
@@ -234,7 +236,7 @@ app.post("/transfer", async (req, res) => {
 
 const checkTransfer = async (transferId) => {
   console.log(
-    "45 seconds have passed. Checking transfer status for transfer ID:",
+    "1 min has passed. Checking transfer status for transfer ID:",
     transferId
   );
 
@@ -258,10 +260,13 @@ const checkTransfer = async (transferId) => {
 
     if (status === "executed") {
       console.log("Transfer created successfully");
+      return "succesful";
     } else if (status === "cancelled") {
       console.log("Transaction unsuccessful");
+      return "unsuccessful";
     } else {
       console.log("Transaction pending");
+      return checkTransfer(transferId);
     }
   } catch (error) {
     console.error("Error during fetch operation:", error);
@@ -383,70 +388,73 @@ app.post("/poll", async (req, res) => {
 });
 
 const logToChat = async (eventId, message) => {
-    const event = await Event.findById(eventId).exec();
-    event.chat.push({
-        type: "log",
-        content: {
-            text: message
-        }
-    });
-    event.save();
-}
+  const event = await Event.findById(eventId).exec();
+  event.chat.push({
+    type: "log",
+    content: {
+      text: message,
+    },
+  });
+  event.save();
+};
 
 // contestar poll
 app.post("/answer_poll", async (req, res) => {
-    const event_id = req.body.event_id;
-    const poll_index = req.body.poll_index;
-    const option = req.body.option;
-    const account_id = req.body.account_id;
+  const event_id = req.body.event_id;
+  const poll_index = req.body.poll_index;
+  const option = req.body.option;
+  const account_id = req.body.account_id;
 
-    const event = await Event.findById(event_id).exec();
-    const message = event.chat[poll_index];
+  const event = await Event.findById(event_id).exec();
+  const message = event.chat[poll_index];
 
-    if (message.type != "poll") {
-        return res.status(404).send("Not a poll");
+  if (message.type != "poll") {
+    return res.status(404).send("Not a poll");
+  }
+
+  const poll = message.content.poll;
+  if (poll.voted.includes(account_id)) {
+    return res.status(401).send("Already voted");
+  }
+
+  poll.options[option].count++;
+  poll.voted.push(account_id);
+
+  if (poll.voted.length == event.participants.length) {
+    let maxVotes = 0;
+    let winningOption = -1;
+    let winningOptionCount = 0;
+    for (let i = 0; i < poll.options.length; i++) {
+      if (poll.options[i].count > maxVotes) {
+        maxVotes = poll.options[i].count;
+        winningOption = i;
+        winningOptionCount = 1;
+      } else if (poll.options[i].count == maxVotes) {
+        winningOptionCount++;
+      }
     }
 
-    const poll = message.content.poll;
-    if(poll.voted.includes(account_id)) {
-        return res.status(401).send("Already voted");
+    if (winningOptionCount == 1) {
+      const change = poll.options[winningOption].cost;
+      let changeMessage = "Goal stays the same.";
+      if (change > 0) {
+        changeMessage = `Goal increased to $${event.goal + change}.`;
+      } else if (change < 0) {
+        changeMessage = `Goal decreased to $${event.goal + change}.`;
+      }
+      event.goal += change;
+      logToChat(
+        event_id,
+        `Poll '${poll.title}' finished, option '${poll.options[winningOption].name}' won. ${changeMessage}`
+      );
+    } else {
+      logToChat(event_id, `Poll '${poll.title}' tied. No option was chosen.`);
     }
+  }
 
-    poll.options[option].count++;
-    poll.voted.push(account_id);
+  await event.save();
 
-    if (poll.voted.length == event.participants.length) {
-        let maxVotes = 0
-        let winningOption = -1;
-        let winningOptionCount = 0;
-        for (let i = 0; i < poll.options.length; i++) {
-            if(poll.options[i].count > maxVotes) {
-                maxVotes = poll.options[i].count;
-                winningOption = i;
-                winningOptionCount = 1;
-            } else if (poll.options[i].count == maxVotes) {
-                winningOptionCount++;
-            }
-        }
-
-        if (winningOptionCount == 1) {
-            const change = poll.options[winningOption].cost;
-            let changeMessage = "Goal stays the same.";
-            if (change > 0) {
-                changeMessage = `Goal increased to $${event.goal+change}.`;
-            } else if (change < 0) {
-                changeMessage = `Goal decreased to $${event.goal+change}.`;
-            }
-            event.goal += change;
-            logToChat(event_id, `Poll '${poll.title}' finished, option '${poll.options[winningOption].name}' won. ${changeMessage}`);
-        } else {
-            logToChat(event_id, `Poll '${poll.title}' tied. No option was chosen.`);
-        }
-    }
-
-    await event.save();
-
-    res.sendStatus(200);
+  res.sendStatus(200);
 });
 
 // checar todos los mensajes
