@@ -37,6 +37,14 @@ const generateAccountNumber = () => {
   return rand1 + rand2 + rand3 + rand4;
 };
 
+export const getCurrentDate = () => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 // Routes for events
 app.post("/event", async (req, res) => {
   // crear tarjeta
@@ -92,6 +100,7 @@ app.post("/transfer", async (req, res) => {
   const userIdAcc = req.body.userIdAcc;
   const accountPay = req.body.accountPayId;
   const amount = req.body.amount;
+  const date = getCurrentDate();
 
   const response = await fetch(
     `api.nessieisreal.com/accounts/${userIdAcc}/transfers?key=${process.env.CAPITAL_ONE_API_KEY}`,
@@ -103,10 +112,10 @@ app.post("/transfer", async (req, res) => {
       body: JSON.stringify({
         medium: "balance",
         payee_id: accountPay,
-        transaction_date: "2024-09-14",
+        transaction_date: date,
         status: "pending",
-        description: "string",
         amount: amount,
+        description: "pago",
       }),
     }
   );
