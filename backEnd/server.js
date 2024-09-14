@@ -104,7 +104,7 @@ app.post("/savings", async (req, res) => {
     });
     const data = await response.json();
 
-    const montlyPayment = req.body.goal / req.body.months;
+    const montlyPayment = req.body.goal / req.body.months / req.body.participants.length;
 
     // Crear evento
     const event = new Event({
