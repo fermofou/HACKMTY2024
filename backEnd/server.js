@@ -63,6 +63,66 @@ app.post('/event', async (req, res) => {
         name: req.body.name,
         goal: req.body.goal,
         deadline: req.body.deadline,
+        participants: req.body.participants.map(participant => ({
+            account_id: participant.account_id,
+            first_name: participant.first_name,
+            last_name: participant.last_name,
+            contribution: 0,
+            percentage: participant.percentage
+        }))
+    });
+
+    try {
+        await event.save();
+    } catch (err) {
+        return res.status(500).json({
+            message: "Something went wrong, try again later."
+        })
+    }
+
+    res.status(200).json({
+        message: "Event created successfuly"
+    });
+});
+
+app.post("/savings", async (req, res) => {
+    // crear tarjeta
+    const accountNumber = generateAccountNumber();
+
+    const response = await fetch(`http://api.nessieisreal.com/customers/${process.env.VIRTUAL_USER}/accounts?key=${process.env.CAPITAL_ONE_API_KEY}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            "type": "Checking",
+            "nickname": req.body.name,
+            "rewards": 0,
+            "balance": 0,
+            "account_number": accountNumber
+        })
+    });
+    const data = await response.json();
+
+    const montlyPayment = req.body.goal / req.body.months;
+
+    // Crear evento
+    const event = new Event({
+        account_id: data.objectCreated.account_number,
+        name: req.body.name,
+        goal: req.body.goal,
+        deadline: req.body.deadline,
+        participants: req.body.participants.map(participant => ({
+            account_id: participant.account_id,
+            first_name: participant.first_name,
+            last_name: participant.last_name,
+            contribution: 0,
+            percentage: participant.percentage
+        })),
+        savings: {
+            months: req.body.months,
+            montlyPayment
+        }
     });
 
     try {
