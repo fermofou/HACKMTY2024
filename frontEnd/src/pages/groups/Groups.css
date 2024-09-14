@@ -34,7 +34,7 @@
     padding: 0.5rem;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: calc(100% - 2rem); /* Ajusta el ancho, tomando en cuenta los márgenes */
+    width: calc(100% - 1rem); /* Ajusta el ancho, tomando en cuenta los márgenes */
     text-decoration: none;
 }
 
@@ -47,7 +47,6 @@
 .events-container {
     flex-grow: 1; /* Ocupa todo el espacio restante disponible */
     overflow-y: auto; /* Habilita el desplazamiento vertical */
-    margin: 0 1rem;
     border-radius: 5px;
 }
 
