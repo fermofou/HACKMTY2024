@@ -102,7 +102,7 @@ app.post("/transfer", async (req, res) => {
   const date = getCurrentDate();
 
   const response = await fetch(
-    `api.nessieisreal.com/accounts/${userIdAcc}/transfers?key=${process.env.CAPITAL_ONE_API_KEY}`,
+    `${API_BASE}/accounts/${userIdAcc}/transfers?key=${process.env.CAPITAL_ONE_API_KEY}`,
     {
       method: "POST",
       headers: {
@@ -129,7 +129,7 @@ app.post("/savings", async (req, res) => {
   const accountNumber = generateAccountNumber();
 
   const response = await fetch(
-    `http://api.nessieisreal.com/customers/${process.env.VIRTUAL_USER}/accounts?key=${process.env.CAPITAL_ONE_API_KEY}`,
+    `${API_BASE}/customers/${process.env.VIRTUAL_USER}/accounts?key=${process.env.CAPITAL_ONE_API_KEY}`,
     {
       method: "POST",
       headers: {
