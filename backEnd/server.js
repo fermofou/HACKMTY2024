@@ -299,9 +299,11 @@ app.post("/savings", async (req, res) => {
 // mandar chat
 app.post("/chat", async (req, res) => {
     const event_id = req.body.event_id;
-    const author_id = req.body.account_id;
+    const author_id = req.body.author_id;
     const author = req.body.author;
     const text = req.body.content;
+    
+    console.log(author_id);
 
     const message = new Message({
         type: "chat",
@@ -331,3 +333,4 @@ app.post("/chat", async (req, res) => {
 //  all contributions
 
 // get card details
+// todos los contactos

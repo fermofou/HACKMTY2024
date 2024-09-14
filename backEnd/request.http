@@ -38,7 +38,7 @@ POST http://127.0.0.1:3000/chat
 Content-Type: application/json
 
 {
-  "event_id": "66e600deba39454998c2ed86",
+  "event_id": "66e60dc24645973fb256c706",
   "author_id": "1",
   "author": "Luis",
   "content": "Hola como estan 123?"
