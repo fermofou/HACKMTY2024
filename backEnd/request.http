@@ -1,0 +1,30 @@
+POST http://127.0.0.1:3000/event
+Content-Type: application/json
+
+{
+  "name": "Barcelona Trip",
+  "goal": 130000,
+  "deadline": "2024-09-23T13:35:47Z"
+}
+
+###
+POST http://127.0.0.1:3000/savings
+Content-Type: application/json
+
+{
+  "name": "Trip to France",
+  "goal": 100000,
+  "deadline": "2024-11-14T13:35:47Z",
+  "months": 2,
+  "participants": [{
+    "account_id": "1",
+    "first_name": "Luis",
+    "last_name": "Amado",
+    "percentage": 0.5
+  }, {
+    "account_id": "2",
+    "first_name": "Fer",
+    "last_name": "Moran",
+    "percentage": 0.5
+  }]
+}

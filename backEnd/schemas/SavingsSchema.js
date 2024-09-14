@@ -1,6 +1,6 @@
 import mongoose, {Schema, model} from 'mongoose';
 
-const savingsSchema = new Schema({
+export const savingsSchema = new Schema({
   montlyPayment: Number,
   months: Number
 });

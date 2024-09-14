@@ -1,11 +1,12 @@
 import mongoose, {Schema, model} from 'mongoose';
-import Poll from './PollSchema.js';
+import { pollSchema } from './PollSchema.js';
 
 export const messageSchema = new Schema({
   type: String,
   content: {
     content: String,
-    poll: Poll
+    author: String,
+    poll: pollSchema
   }
 })
 
