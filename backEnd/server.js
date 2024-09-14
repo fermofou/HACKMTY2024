@@ -504,12 +504,7 @@ app.get("/card/:event_id", async (req, res) => {
     });
 });
 
-/* APIS FALTANTES */
-
-
-
-// todos los contactos
-
+// todos los clientes
 app.post("/clients", async (req, res) => {
   try {
     const response = await fetch(
