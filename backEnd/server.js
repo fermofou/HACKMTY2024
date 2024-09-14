@@ -458,3 +458,25 @@ app.get("/chat", async (req, res) => {});
 
 // get card details
 // todos los contactos
+
+app.post("/clients", async (req, res) => {
+  try {
+    const response = await fetch(
+      `${API_BASE}/customers/?key=${process.env.CAPITAL_ONE_API_KEY}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const clients = await response.json();
+    const filteredClients = clients.filter(
+      (client) => client._id !== process.env.VIRTUAL_USER
+    );
+    res.status(200).json(filteredClients);
+  } catch (error) {
+    console.error("Error during fetch operation:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
