@@ -6,7 +6,8 @@ export const pollSchema = new Schema({
     name: String,
     cost: Number,
     count: Number
-  }]
+  }],
+  voted: [String]
 });
 
 const Poll = model('Poll', pollSchema);
