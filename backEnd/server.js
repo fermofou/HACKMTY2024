@@ -47,40 +47,49 @@ export const getCurrentDate = () => {
   return `${year}-${month}-${day}`;
 };
 
+const checkTransfer = async (transferId) => {
+  // Implement the checkTransfer function logic here
+  console.log(`Checking transfer with ID: ${transferId}`);
+  // Add your logic to check the transfer status or any other operation
+};
+
 // Routes for events
 app.post("/event", async (req, res) => {
   // crear tarjeta
   const accountNumber = generateAccountNumber();
 
-    const response = await fetch(`${API_BASE}/customers/${process.env.VIRTUAL_USER}/accounts?key=${process.env.CAPITAL_ONE_API_KEY}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            "type": "Checking",
-            "nickname": req.body.name,
-            "rewards": 0,
-            "balance": 0,
-            "account_number": accountNumber
-        })
-    });
-    const data = await response.json();
+  const response = await fetch(
+    `${API_BASE}/customers/${process.env.VIRTUAL_USER}/accounts?key=${process.env.CAPITAL_ONE_API_KEY}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        type: "Checking",
+        nickname: req.body.name,
+        rewards: 0,
+        balance: 0,
+        account_number: accountNumber,
+      }),
+    }
+  );
+  const data = await response.json();
 
-    // Crear evento
-    const event = new Event({
-        account_id: data.objectCreated._id,
-        name: req.body.name,
-        goal: req.body.goal,
-        deadline: req.body.deadline,
-        participants: req.body.participants.map(participant => ({
-            account_id: participant.account_id,
-            first_name: participant.first_name,
-            last_name: participant.last_name,
-            contribution: 0,
-            percentage: participant.percentage
-        }))
-    });
+  // Crear evento
+  const event = new Event({
+    account_id: data.objectCreated._id,
+    name: req.body.name,
+    goal: req.body.goal,
+    deadline: req.body.deadline,
+    participants: req.body.participants.map((participant) => ({
+      account_id: participant.account_id,
+      first_name: participant.first_name,
+      last_name: participant.last_name,
+      contribution: 0,
+      percentage: participant.percentage,
+    })),
+  });
 
   try {
     await event.save();
@@ -94,7 +103,38 @@ app.post("/event", async (req, res) => {
     message: "Event created successfuly",
   });
 });
+/*/ para llamar:
+a pagar:
+{
+        "_id": "66e5ee429683f20dd5189bb5",
+        "type": "Checking",
+        "nickname": "Trip to France",
+        "rewards": 0,
+        "balance": 1000,
+        "account_number": "3044059486028205",
+        "customer_id": "66e5bba19683f20dd5189b7d"
+}
+cuenta que pagará:
 
+ {
+        "_id": "66e5fb989683f20dd5189bc6",
+        "type": "Savings",
+        "nickname": "Cuenta1_J",
+        "rewards": 0,
+        "balance": 10000,
+        "account_number": "1738902110012010",
+        "customer_id": "66e5dd669683f20dd5189b92"
+    }
+
+
+body de /transfer:
+{
+    "userIdAcc": "66e5fb989683f20dd5189bc6",
+    "accountPayId": "66e5ee429683f20dd5189bb5",
+    "amount": 100
+}
+
+/*/
 app.post("/transfer", async (req, res) => {
   const userIdAcc = req.body.userIdAcc;
   const accountPay = req.body.accountPayId;
@@ -118,6 +158,12 @@ app.post("/transfer", async (req, res) => {
       }),
     }
   );
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const data = await response.json();
+  const transferId = data.objectCreated._id;
+  await checkTransfer(transferId);
 
   res.status(200).json({
     message: "Transfer created successfuly",
@@ -149,24 +195,24 @@ app.post("/savings", async (req, res) => {
   const montlyPayment =
     req.body.goal / req.body.months / req.body.participants.length;
 
-    // Crear evento
-    const event = new Event({
-        account_id: data.objectCreated._id,
-        name: req.body.name,
-        goal: req.body.goal,
-        deadline: req.body.deadline,
-        participants: req.body.participants.map(participant => ({
-            account_id: participant.account_id,
-            first_name: participant.first_name,
-            last_name: participant.last_name,
-            contribution: 0,
-            percentage: participant.percentage
-        })),
-        savings: {
-            months: req.body.months,
-            montlyPayment
-        }
-    });
+  // Crear evento
+  const event = new Event({
+    account_id: data.objectCreated._id,
+    name: req.body.name,
+    goal: req.body.goal,
+    deadline: req.body.deadline,
+    participants: req.body.participants.map((participant) => ({
+      account_id: participant.account_id,
+      first_name: participant.first_name,
+      last_name: participant.last_name,
+      contribution: 0,
+      percentage: participant.percentage,
+    })),
+    savings: {
+      months: req.body.months,
+      montlyPayment,
+    },
+  });
 
   try {
     await event.save();
