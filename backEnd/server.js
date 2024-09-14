@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import Event from "./schemas/EventSchema.js";
 import Message from "./schemas/MessageSchema.js";
 import Poll from "./schemas/PollSchema.js";
+import cors from 'cors';
 
 dotenv.config();
 const app = express();
@@ -11,6 +12,7 @@ const app = express();
 const API_BASE = "http://api.nessieisreal.com";
 
 app.use(json());
+app.use(cors());
 
 // Example defining a route in Express
 app.get("/", (req, res) => {
@@ -47,6 +49,14 @@ export const getCurrentDate = () => {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+};
+
+const getAccount = async (account_id) => {
+    const response = await fetch(
+        `${API_BASE}/accounts/${account_id}?key=${process.env.CAPITAL_ONE_API_KEY}`
+    );
+    const data = await response.json();
+    return data;
 };
 
 const getAccountBalance = async (account_id) => {
@@ -440,16 +450,47 @@ app.post("/answer_poll", async (req, res) => {
 });
 
 // checar todos los mensajes
-app.get("/chat", async (req, res) => {
+app.get("/chat/:event_id", async (req, res) => {
+    const event_id = req.params.event_id;
+
+    const event = await Event.findById(event_id).exec();
+
+    res.status(200).json(event.chat);
+});
+
+// individual event
+//  your contribution
+//  all contributions
+app.get("/event/:event_id", async (req, res) => {
+    const event_id = req.params.event_id;
+
+    const event = await Event.findById(event_id).exec();
+
+    event.balance = await getAccountBalance(event.account_id);
+
+    res.status(200).json(event);
+});
+
+// get card details
+app.get("/card/:event_id", async (req, res) => {
+    const event_id = req.params.event_id;
+    const event = await Event.findById(event_id).exec();
     
+    const account = await getAccount(event.account_id);
+    const balance = account.balance;
+    const card_number = account.account_number;
+
+    res.status(200).json({
+        balance,
+        card_number,
+        expiry_date,
+        cvv,
+        name
+    });
 });
 
 /* APIS FALTANTES */
 
 
-// individual event
-//  your contribution
-//  all contributions
 
-// get card details
 // todos los contactos

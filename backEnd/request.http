@@ -72,3 +72,6 @@ Content-Type: application/json
   "poll_index": 4,
   "option": 0
 }
+
+###
+GET http://127.0.0.1:3000/chat/66e60dc24645973fb256c706
