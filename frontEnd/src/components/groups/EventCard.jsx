@@ -18,13 +18,14 @@ function EventCard({ number, event }) {
 
     let typeImg;
 
-    if (event.type === "savings") {
+    if (event.savings) {
         typeImg = SavingsImg;
 
     } else {
         typeImg = EventImg;
     }
-    console.log(event);
+
+    console.log(event.type);
 
     return (
         <>

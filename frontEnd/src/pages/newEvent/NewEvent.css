@@ -187,3 +187,8 @@ form input[type="date"] {
   color: #014a77;
   border: none;
 }
+
+.upperButtons button:hover {
+  background-color: transparent;
+  border: none;
+}

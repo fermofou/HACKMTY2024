@@ -13,6 +13,10 @@ const EventForm = () => {
 
   const navigate = useNavigate();
 
+  const handleCancelBtm = () => {
+    navigate("/groups");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const percentage = 1 / selectedPeople.length;
@@ -96,9 +100,7 @@ const EventForm = () => {
     <form onSubmit={handleSubmit}>
       <div>
         <div className="upperButtons">
-          <Link to="/groups">
-            <button>Cancel</button>
-          </Link>
+          <button onClick={handleCancelBtm}>Cancel</button>
 
           <button type="submit" className="submitBtn">
             Create
