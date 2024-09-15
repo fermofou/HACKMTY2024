@@ -10,7 +10,9 @@ const eventSchema = new Schema({
   deadline: Date,
   savings: savingsSchema,
   chat: [messageSchema],
-  participants: [participantSchema]
+  participants: [participantSchema],
+  card_number: String,
+  balance: Number
 });
 
 const Event = model('Event', eventSchema);

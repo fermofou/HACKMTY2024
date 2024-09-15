@@ -40,7 +40,7 @@ const getRandomInt = (max) => {
   return Math.floor(Math.random() * max);
 };
 
-const generateAccountNumber = () => {
+const generateCardNumber = () => {
   const rand1 = getRandomInt(9999).toString().padStart(4, "0");
   const rand2 = getRandomInt(9999).toString().padStart(4, "0");
   const rand3 = getRandomInt(9999).toString().padStart(4, "0");
@@ -56,30 +56,6 @@ export const getCurrentDate = () => {
   return `${year}-${month}-${day}`;
 };
 
-const getAccount = async (account_id) => {
-  const response = await fetch(
-    `${API_BASE}/accounts/${account_id}?key=${process.env.CAPITAL_ONE_API_KEY}`
-  );
-  const data = await response.json();
-  return data;
-};
-
-const getUserFromAccountId = async (account_id) => {
-  const response = await fetch(
-    `${API_BASE}/accounts/${account_id}/customer?key=${process.env.CAPITAL_ONE_API_KEY}`
-  );
-  const data = await response.json();
-  return data;
-};
-
-const getAccountBalance = async (account_id) => {
-  const response = await fetch(
-    `${API_BASE}/accounts/${account_id}?key=${process.env.CAPITAL_ONE_API_KEY}`
-  );
-  const data = await response.json();
-  return data.balance;
-};
-
 app.get("/events_savings", async (req, res) => {
   const account_id = req.query.account_id;
 
@@ -90,49 +66,13 @@ app.get("/events_savings", async (req, res) => {
 
   events.sort((a, b) => a.deadline < b.deadline);
 
-  const mappedEvents = await Promise.all(
-    events.map(async (event) => {
-      const amount = await getAccountBalance(event.account_id);
-      const type = event.savings == undefined ? "event" : "savings";
-      return {
-        balance: amount,
-        goal: event.goal,
-        type,
-        deadline: event.deadline,
-        name: event.name,
-        participantCount: event.participants.length,
-        percentage: Math.round((amount / event.goal) * 100),
-        event_id: event._id,
-      };
-    })
-  );
-  res.status(200).json(mappedEvents);
+  res.status(200).json(events);
 });
 
 // Routes for events
 app.post("/event", async (req, res) => {
   // crear tarjeta
-  const accountNumber = generateAccountNumber();
-  console.log(accountNumber);
-  const response = await fetch(
-    `${API_BASE}/customers/${process.env.VIRTUAL_USER}/accounts?key=${process.env.CAPITAL_ONE_API_KEY}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        type: "Checking",
-        nickname: req.body.name,
-        rewards: 0,
-        balance: 0,
-        account_number: accountNumber,
-      }),
-    }
-  );
-
-  const data = await response.json();
-  console.log(response);
+  const card_number = generateCardNumber();
 
   // Crear evento
   const event = new Event({
@@ -147,6 +87,8 @@ app.post("/event", async (req, res) => {
       contribution: parseFloat(0),
       percentage: participant.percentage,
     })),
+    card_number,
+    balance: 0
   });
 
   try {
@@ -161,6 +103,43 @@ app.post("/event", async (req, res) => {
     message: "Event created successfuly",
   });
 });
+
+app.post("/savings", async (req, res) => {
+    // crear tarjeta
+    const card_number = generateCardNumber();
+  
+    // Crear evento
+    const event = new Event({
+      account_id: data.objectCreated._id,
+      name: req.body.name,
+      goal: parseFloat(req.body.goal),
+      deadline: deadline,
+      participants: req.body.participants.map((participant) => ({
+        account_id: participant.account_id,
+        first_name: participant.first_name,
+        last_name: participant.last_name,
+        contribution: parseFloat(0),
+        percentage: participant.percentage,
+      })),
+      savings: {
+        months,
+        montlyPayment,
+      },
+      card_number,
+      balance: 0
+    });
+  
+    try {
+      await event.save();
+    } catch (err) {
+      return res.status(500).json({
+        message: "Something went wrong, try again later.",
+      });
+    }
+    res.status(200).json({
+      message: "Event created successfuly",
+    });
+  });
 
 /*/ para llamar:
 a pagar:
@@ -312,66 +291,6 @@ const checkTransfer = async (transferId, event) => {
   }
 };
 
-app.post("/savings", async (req, res) => {
-  // crear tarjeta
-  const accountNumber = generateAccountNumber();
-
-  const response = await fetch(
-    `${API_BASE}/customers/${process.env.VIRTUAL_USER}/accounts?key=${process.env.CAPITAL_ONE_API_KEY}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        type: "Checking",
-        nickname: req.body.name,
-        rewards: 0,
-        balance: 0,
-        account_number: accountNumber,
-      }),
-    }
-  );
-  const data = await response.json();
-  const today = new Date();
-  const deadline = new Date(req.body.deadline);
-  const timeDiff = Math.abs(deadline - today);
-  const months = Math.ceil(timeDiff / (1000 * 60 * 60 * 24 * 30)); // Convert time difference to months
-
-  const montlyPayment = req.body.goal / months / req.body.participants.length;
-
-  // Crear evento
-
-  const event = new Event({
-    account_id: data.objectCreated._id,
-    name: req.body.name,
-    goal: parseFloat(req.body.goal),
-    deadline: deadline,
-    participants: req.body.participants.map((participant) => ({
-      account_id: participant.account_id,
-      first_name: participant.first_name,
-      last_name: participant.last_name,
-      contribution: parseFloat(0),
-      percentage: participant.percentage,
-    })),
-    savings: {
-      months,
-      montlyPayment,
-    },
-  });
-
-  try {
-    await event.save();
-  } catch (err) {
-    return res.status(500).json({
-      message: "Something went wrong, try again later.",
-    });
-  }
-  res.status(200).json({
-    message: "Event created successfuly",
-  });
-});
-
 const getAuthorName = (event, author_id) => {
   let author = "";
   for (const participant of event.participants) {
@@ -380,14 +299,6 @@ const getAuthorName = (event, author_id) => {
     }
   }
   return author;
-};
-
-const getParticipant = (event, participant_id) => {
-  for (const participant of event.participants) {
-    if (participant.account_id == participant_id) {
-      return participant;
-    }
-  }
 };
 
 // mandar chat
@@ -584,20 +495,7 @@ app.get("/event/:event_id", async (req, res) => {
 
   let event = await Event.findById(event_id).exec();
 
-  const balance = await getAccountBalance(event.account_id);
-
-  const newEvent = {
-    account_id: event.account_id,
-    name: event.name,
-    goal: event.goal,
-    deadline: event.deadline,
-    savings: event.savings,
-    chat: event.chat,
-    participants: event.participants,
-    balance,
-  };
-
-  res.status(200).json(newEvent);
+  res.status(200).json(event);
 });
 
 // get card details
@@ -605,9 +503,8 @@ app.get("/card/:event_id", async (req, res) => {
   const event_id = req.params.event_id;
   const event = await Event.findById(event_id).exec();
 
-  const account = await getAccount(event.account_id);
-  const balance = account.balance;
-  const card_number = account.account_number.match(/.{1,4}/g).join(" ");
+  const balance = event.balance;
+  const card_number = event.card_number.match(/.{1,4}/g).join(" ");
 
   const deadline = new Date(event.deadline);
   const expiry_date =
