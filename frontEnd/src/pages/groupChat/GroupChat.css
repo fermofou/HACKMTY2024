@@ -1,6 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 .groupchat-container {
   background: #F0F0F0;
-  height: calc(100vh - 200px);
+  height: calc(100vh - 156px);
   display: flex;
   flex-direction:column;
   box-shadow: var(--box-shadow-default);
@@ -68,7 +70,6 @@
 .groupchat-poll-options {
   display: flex;
   flex-direction: column;
-  padding: 0 5px;
   margin-top: 5px;
 }
 
@@ -103,6 +104,10 @@
   background: white;
 }
 
+.groupchat-poll-option-winner {
+  background: rgba(255, 255, 255, 0.323);
+}
+
 p.groupchat-pollover {
   color: rgb(214, 214, 214);
   text-align: right;
@@ -117,6 +122,8 @@ p.groupchat-poll-cost {
 .groupchat-poll-option {
   display: flex;
   justify-content: space-between;
+  padding: 0 10px;
+  border-radius: 5px;
 }
 
 .groupchat-createpoll-button {

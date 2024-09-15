@@ -59,6 +59,12 @@ const getAccount = async (account_id) => {
   return data;
 };
 
+const getUserFromAccountId = async (account_id) => {
+    const response = await fetch(`${API_BASE}/accounts/${account_id}/customer?key=${process.env.CAPITAL_ONE_API_KEY}`);
+    const data = await response.json();
+    return data;
+}
+
 const getAccountBalance = async (account_id) => {
   const response = await fetch(
     `${API_BASE}/accounts/${account_id}?key=${process.env.CAPITAL_ONE_API_KEY}`
@@ -343,12 +349,25 @@ app.post("/savings", async (req, res) => {
   });
 });
 
+const getAuthorName = (event, author_id) => {
+    let author = "";
+    for (const participant of event.participants) {
+      if (participant.account_id == author_id) {
+          author = participant.first_name + " " + participant.last_name;
+      }
+    }
+    return author;
+}
+
 // mandar chat
 app.post("/chat", async (req, res) => {
   const event_id = req.body.event_id;
   const author_id = req.body.author_id;
-  const author = req.body.author;
-  const text = req.body.content;
+
+  const event = await Event.findById(event_id).exec();
+  const author = getAuthorName(event, author_id);
+
+  const text = req.body.text;
 
   const message = new Message({
     type: "chat",
@@ -359,7 +378,6 @@ app.post("/chat", async (req, res) => {
     },
   });
 
-  const event = await Event.findById(event_id).exec();
   event.chat.push(message);
 
   event.save();
@@ -371,9 +389,11 @@ app.post("/chat", async (req, res) => {
 app.post("/poll", async (req, res) => {
   const event_id = req.body.event_id;
   const author_id = req.body.author_id;
-  const author = req.body.author;
   const title = req.body.title;
   const options = req.body.options;
+  
+  const event = await Event.findById(event_id).exec();
+  const author = getAuthorName(event, author_id);
 
   const poll = new Poll({
     title,
@@ -392,7 +412,6 @@ app.post("/poll", async (req, res) => {
     },
   });
 
-  const event = await Event.findById(event_id).exec();
   event.chat.push(message);
 
   event.save();
@@ -427,7 +446,7 @@ app.post("/answer_poll", async (req, res) => {
 
   const poll = message.content.poll;
   let already_voted = false;
-  for (let vote in poll.voted) {
+  for (let vote of poll.voted) {
     if (vote.user == account_id) {
         already_voted = true;
         break;
@@ -443,7 +462,7 @@ app.post("/answer_poll", async (req, res) => {
   const winner = getPollWinner(poll, event);
 
   if (winner == -1) {
-    logToChat(event_id, `Poll '${poll.title}' tied. No option was chosen.`);
+    logToChat(event_id, `Poll tied. No option was chosen.`);
   } else if (winner >= 0) {
     const change = poll.options[winner].cost;
     let changeMessage = "Goal stays the same.";
@@ -455,7 +474,7 @@ app.post("/answer_poll", async (req, res) => {
     event.goal += change;
     logToChat(
       event_id,
-      `Poll '${poll.title}' finished, option '${poll.options[winner].name}' won. ${changeMessage}`
+      `'${poll.options[winner].name}' won. ${changeMessage}`
     );
   }
 
@@ -504,7 +523,20 @@ app.get("/chat/:event_id", async (req, res) => {
             done = true;
             win = winner;
         }
-        msg.content.poll = {...msg.content.poll, done, winner: win}
+        return {
+            type: "poll",
+            content: {
+                author: msg.content.author,
+                author_id: msg.content.author_id,
+                poll: {
+                    title: msg.content.poll.title,
+                    options: msg.content.poll.options,
+                    voted: msg.content.poll.voted,
+                    done,
+                    winner: win
+                }
+            }
+        }
     }
     return msg;
   });
