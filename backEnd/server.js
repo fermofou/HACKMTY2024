@@ -60,10 +60,12 @@ const getAccount = async (account_id) => {
 };
 
 const getUserFromAccountId = async (account_id) => {
-    const response = await fetch(`${API_BASE}/accounts/${account_id}/customer?key=${process.env.CAPITAL_ONE_API_KEY}`);
-    const data = await response.json();
-    return data;
-}
+  const response = await fetch(
+    `${API_BASE}/accounts/${account_id}/customer?key=${process.env.CAPITAL_ONE_API_KEY}`
+  );
+  const data = await response.json();
+  return data;
+};
 
 const getAccountBalance = async (account_id) => {
   const response = await fetch(
@@ -313,29 +315,49 @@ app.post("/savings", async (req, res) => {
     }
   );
   const data = await response.json();
+  const today = new Date();
+  const deadline = new Date(req.body.deadline);
+  const timeDiff = Math.abs(deadline - today);
+  const months = Math.ceil(timeDiff / (1000 * 60 * 60 * 24 * 30)); // Convert time difference to months
 
   const montlyPayment =
     req.body.goal / req.body.months / req.body.participants.length;
 
   // Crear evento
-  const event = new Event({
-    account_id: data.objectCreated._id,
-    name: req.body.name,
-    goal: req.body.goal,
-    deadline: req.body.deadline,
-    participants: req.body.participants.map((participant) => ({
-      account_id: participant.account_id,
-      first_name: participant.first_name,
-      last_name: participant.last_name,
-      contribution: 0,
-      percentage: participant.percentage,
-    })),
-    savings: {
-      months: req.body.months,
-      montlyPayment,
-    },
-  });
-
+  if (req.body.type === "savings") {
+    const event = new Event({
+      account_id: data.objectCreated._id,
+      name: req.body.name,
+      goal: req.body.goal,
+      deadline: req.body.deadline,
+      participants: req.body.participants.map((participant) => ({
+        account_id: participant.account_id,
+        first_name: participant.first_name,
+        last_name: participant.last_name,
+        contribution: 0,
+        percentage: participant.percentage,
+      })),
+      savings: {
+        months,
+        montlyPayment,
+      },
+    });
+  } else {
+    const event = new Event({
+      account_id: data.objectCreated._id,
+      name: req.body.name,
+      goal: req.body.goal,
+      deadline: req.body.deadline,
+      participants: req.body.participants.map((participant) => ({
+        account_id: participant.account_id,
+        first_name: participant.first_name,
+        last_name: participant.last_name,
+        contribution: 0,
+        percentage: participant.percentage,
+      })),
+      savings: null, // Set savings field
+    });
+  }
   try {
     await event.save();
   } catch (err) {
@@ -350,14 +372,14 @@ app.post("/savings", async (req, res) => {
 });
 
 const getAuthorName = (event, author_id) => {
-    let author = "";
-    for (const participant of event.participants) {
-      if (participant.account_id == author_id) {
-          author = participant.first_name + " " + participant.last_name;
-      }
+  let author = "";
+  for (const participant of event.participants) {
+    if (participant.account_id == author_id) {
+      author = participant.first_name + " " + participant.last_name;
     }
-    return author;
-}
+  }
+  return author;
+};
 
 // mandar chat
 app.post("/chat", async (req, res) => {
@@ -391,7 +413,7 @@ app.post("/poll", async (req, res) => {
   const author_id = req.body.author_id;
   const title = req.body.title;
   const options = req.body.options;
-  
+
   const event = await Event.findById(event_id).exec();
   const author = getAuthorName(event, author_id);
 
@@ -448,8 +470,8 @@ app.post("/answer_poll", async (req, res) => {
   let already_voted = false;
   for (let vote of poll.voted) {
     if (vote.user == account_id) {
-        already_voted = true;
-        break;
+      already_voted = true;
+      break;
     }
   }
   if (already_voted) {
@@ -457,7 +479,7 @@ app.post("/answer_poll", async (req, res) => {
   }
 
   poll.options[option].count++;
-  poll.voted.push({user: account_id, option});
+  poll.voted.push({ user: account_id, option });
 
   const winner = getPollWinner(poll, event);
 
@@ -467,15 +489,16 @@ app.post("/answer_poll", async (req, res) => {
     const change = poll.options[winner].cost;
     let changeMessage = "Goal stays the same.";
     if (change > 0) {
-      changeMessage = `Goal increased to $${Intl.NumberFormat().format(event.goal + change)}.`;
+      changeMessage = `Goal increased to $${Intl.NumberFormat().format(
+        event.goal + change
+      )}.`;
     } else if (change < 0) {
-      changeMessage = `Goal decreased to $${Intl.NumberFormat().format(event.goal + change)}.`;
+      changeMessage = `Goal decreased to $${Intl.NumberFormat().format(
+        event.goal + change
+      )}.`;
     }
     event.goal += change;
-    logToChat(
-      event_id,
-      `'${poll.options[winner].name}' won. ${changeMessage}`
-    );
+    logToChat(event_id, `'${poll.options[winner].name}' won. ${changeMessage}`);
   }
 
   await event.save();
@@ -484,59 +507,59 @@ app.post("/answer_poll", async (req, res) => {
 });
 
 const getPollWinner = (poll, event) => {
-    if (poll.voted.length == event.participants.length) {
-        let maxVotes = 0;
-        let winningOption = -1;
-        let winningOptionCount = 0;
-        for (let i = 0; i < poll.options.length; i++) {
-        if (poll.options[i].count > maxVotes) {
-            maxVotes = poll.options[i].count;
-            winningOption = i;
-            winningOptionCount = 1;
-        } else if (poll.options[i].count == maxVotes) {
-            winningOptionCount++;
-        }
-        }
-
-        if (winningOptionCount == 1) {
-        return winningOption;
-        } else {
-        return -1;
-        }
-    } else {
-        return -2;
+  if (poll.voted.length == event.participants.length) {
+    let maxVotes = 0;
+    let winningOption = -1;
+    let winningOptionCount = 0;
+    for (let i = 0; i < poll.options.length; i++) {
+      if (poll.options[i].count > maxVotes) {
+        maxVotes = poll.options[i].count;
+        winningOption = i;
+        winningOptionCount = 1;
+      } else if (poll.options[i].count == maxVotes) {
+        winningOptionCount++;
+      }
     }
-}
+
+    if (winningOptionCount == 1) {
+      return winningOption;
+    } else {
+      return -1;
+    }
+  } else {
+    return -2;
+  }
+};
 
 // checar todos los mensajes
 app.get("/chat/:event_id", async (req, res) => {
   const event_id = req.params.event_id;
 
   let event = await Event.findById(event_id).exec();
-  
+
   const newChat = event.chat.map((msg) => {
     if (msg.type === "poll") {
-        let done = false;
-        let win = -2;
-        const winner = getPollWinner(msg.content.poll, event);
-        if (winner > -2) {
-            done = true;
-            win = winner;
-        }
-        return {
-            type: "poll",
-            content: {
-                author: msg.content.author,
-                author_id: msg.content.author_id,
-                poll: {
-                    title: msg.content.poll.title,
-                    options: msg.content.poll.options,
-                    voted: msg.content.poll.voted,
-                    done,
-                    winner: win
-                }
-            }
-        }
+      let done = false;
+      let win = -2;
+      const winner = getPollWinner(msg.content.poll, event);
+      if (winner > -2) {
+        done = true;
+        win = winner;
+      }
+      return {
+        type: "poll",
+        content: {
+          author: msg.content.author,
+          author_id: msg.content.author_id,
+          poll: {
+            title: msg.content.poll.title,
+            options: msg.content.poll.options,
+            voted: msg.content.poll.voted,
+            done,
+            winner: win,
+          },
+        },
+      };
     }
     return msg;
   });
@@ -562,8 +585,8 @@ app.get("/event/:event_id", async (req, res) => {
     savings: event.savings,
     chat: event.chat,
     participants: event.participants,
-    balance
-  }
+    balance,
+  };
 
   res.status(200).json(newEvent);
 });
@@ -620,6 +643,68 @@ app.get("/clients", async (req, res) => {
     );
 
     res.status(200).json(filteredClients);
+  } catch (error) {
+    console.error("Error during fetch operation:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get("/clients", async (req, res) => {
+  try {
+    const response = await fetch(
+      `${API_BASE}/customers?key=${process.env.CAPITAL_ONE_API_KEY}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const clients = await response.json();
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${clients.status}`);
+    }
+    // Filter the clients array to exclude the customer with id equal to VIRTUAL_USER
+    const filteredClients = clients.filter(
+      (client) => client._id !== process.env.VIRTUAL_USER
+    );
+
+    res.status(200).json(filteredClients);
+  } catch (error) {
+    console.error("Error during fetch operation:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get("/firstAcc", async (req, res) => {
+  const customerId = req.params.customerId;
+
+  try {
+    const response = await fetch(
+      `${API_BASE}/customers/${customerId}/accounts?key=${process.env.CAPITAL_ONE_API_KEY}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const accounts = await response.json();
+
+    if (accounts.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No accounts found for this customer" });
+    }
+
+    res.status(200).json(accounts[0]);
   } catch (error) {
     console.error("Error during fetch operation:", error);
     res.status(500).json({ error: error.message });

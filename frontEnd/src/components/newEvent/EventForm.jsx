@@ -13,7 +13,7 @@ const EventForm = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (
       !eventName ||
@@ -25,7 +25,34 @@ const EventForm = () => {
       return;
     }
     console.log({ eventName, eventType, goal, dueDate, selectedPeople });
-    navigate("/groups");
+    const eventData = {
+      name: eventName,
+      type: eventType,
+      goal: parseFloat(goal),
+      deadline: dueDate,
+      participants: selectedPeople,
+    };
+    try {
+      const response = await fetch("http://localhost:3000/savings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(eventData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(data.message);
+        navigate("/success"); // Navigate to a success page or another route
+      } else {
+        const errorData = await response.json();
+        alert(errorData.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Something went wrong, please try again later.");
+    }
   };
 
   return (
