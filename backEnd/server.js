@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import Event from "./schemas/EventSchema.js";
 import Message from "./schemas/MessageSchema.js";
 import Poll from "./schemas/PollSchema.js";
-import cors from 'cors';
+import cors from "cors";
 
 dotenv.config();
 const app = express();
@@ -52,11 +52,11 @@ export const getCurrentDate = () => {
 };
 
 const getAccount = async (account_id) => {
-    const response = await fetch(
-        `${API_BASE}/accounts/${account_id}?key=${process.env.CAPITAL_ONE_API_KEY}`
-    );
-    const data = await response.json();
-    return data;
+  const response = await fetch(
+    `${API_BASE}/accounts/${account_id}?key=${process.env.CAPITAL_ONE_API_KEY}`
+  );
+  const data = await response.json();
+  return data;
 };
 
 const getAccountBalance = async (account_id) => {
@@ -89,7 +89,7 @@ app.get("/events_savings", async (req, res) => {
         name: event.name,
         participantCount: event.participants.length,
         percentage: Math.round((amount / event.goal) * 100),
-        event_id: event._id
+        event_id: event._id,
       };
     })
   );
@@ -181,7 +181,18 @@ body de /transfer:
 app.post("/transfer", async (req, res) => {
   const date = getCurrentDate();
   const event_id = req.body.event_id;
-  const account_id = event_id.account_id;
+  //   console.log("event_id", event_id);
+  const event = await Event.findById(event_id).exec();
+  //   console.log("event", event);
+  if (!event) {
+    return res.status(404).send("Event not found");
+  }
+  const account = event.account_id;
+
+  //   console.log("account_id es", account);
+
+  //   const event = await Event.findById(event_id).exec();
+
   try {
     const response = await fetch(
       `${API_BASE}/accounts/${req.body.userIdAcc}/transfers?key=${process.env.CAPITAL_ONE_API_KEY}`,
@@ -192,7 +203,7 @@ app.post("/transfer", async (req, res) => {
         },
         body: JSON.stringify({
           medium: "balance",
-          payee_id: req.body.accountPayId,
+          payee_id: account,
           transaction_date: date,
           status: "pending",
           amount: req.body.amount,
@@ -206,10 +217,10 @@ app.post("/transfer", async (req, res) => {
     }
 
     const data = await response.json();
-    console.log("Response data:", data); // Debugging: Log the parsed response data
+    // console.log("Response data:", data);
 
     const transferId = data.objectCreated._id;
-    console.log("transferId", transferId);
+    // console.log("transferId", transferId);
 
     // Call the checkTransfer function asynchronously to avoid blocking the response
     setTimeout(async () => {
@@ -461,56 +472,59 @@ app.post("/answer_poll", async (req, res) => {
 
 // checar todos los mensajes
 app.get("/chat/:event_id", async (req, res) => {
-    const event_id = req.params.event_id;
+  const event_id = req.params.event_id;
 
-    const event = await Event.findById(event_id).exec();
+  const event = await Event.findById(event_id).exec();
 
-    res.status(200).json(event.chat);
+  res.status(200).json(event.chat);
 });
 
 // individual event
 //  your contribution
 //  all contributions
 app.get("/event/:event_id", async (req, res) => {
-    const event_id = req.params.event_id;
+  const event_id = req.params.event_id;
 
-    const event = await Event.findById(event_id).exec();
+  const event = await Event.findById(event_id).exec();
 
-    event.balance = await getAccountBalance(event.account_id);
+  event.balance = await getAccountBalance(event.account_id);
 
-    res.status(200).json(event);
+  res.status(200).json(event);
 });
 
 // get card details
 app.get("/card/:event_id", async (req, res) => {
-    const event_id = req.params.event_id;
-    const event = await Event.findById(event_id).exec();
-    
-    const account = await getAccount(event.account_id);
-    const balance = account.balance;
-    const card_number = account.account_number.match(/.{1,4}/g).join(' ');
+  const event_id = req.params.event_id;
+  const event = await Event.findById(event_id).exec();
 
-    const deadline = new Date(event.deadline);
-    const expiry_date = deadline.getMonth().toString().padStart(2, '0') + ' / ' + deadline.getFullYear().toString().substr(2);
+  const account = await getAccount(event.account_id);
+  const balance = account.balance;
+  const card_number = account.account_number.match(/.{1,4}/g).join(" ");
 
-    const cvv = getRandomInt(999).toString().padStart(3, '0');
+  const deadline = new Date(event.deadline);
+  const expiry_date =
+    deadline.getMonth().toString().padStart(2, "0") +
+    " / " +
+    deadline.getFullYear().toString().substr(2);
 
-    const name = event.name;
+  const cvv = getRandomInt(999).toString().padStart(3, "0");
 
-    res.status(200).json({
-        balance,
-        card_number,
-        expiry_date,
-        cvv,
-        name
-    });
+  const name = event.name;
+
+  res.status(200).json({
+    balance,
+    card_number,
+    expiry_date,
+    cvv,
+    name,
+  });
 });
 
 // todos los clientes
-app.post("/clients", async (req, res) => {
+app.get("/clients", async (req, res) => {
   try {
     const response = await fetch(
-      `${API_BASE}/customers/?key=${process.env.CAPITAL_ONE_API_KEY}`,
+      `http://api.nessieisreal.com/customers?key=${process.env.CAPITAL_ONE_API_KEY}`,
       {
         method: "GET",
         headers: {
@@ -518,10 +532,17 @@ app.post("/clients", async (req, res) => {
         },
       }
     );
+
     const clients = await response.json();
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${clients.status}`);
+    }
+    // Filter the clients array to exclude the customer with id equal to VIRTUAL_USER
     const filteredClients = clients.filter(
       (client) => client._id !== process.env.VIRTUAL_USER
     );
+
     res.status(200).json(filteredClients);
   } catch (error) {
     console.error("Error during fetch operation:", error);
