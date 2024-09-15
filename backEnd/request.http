@@ -30,7 +30,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://127.0.0.1:3000/events_savings?account_id=1
+GET http://127.0.0.1:3000/events_savings?account_id=66e6c00906a7fa86cceba430
 Content-Type: application/json
 
 ###
