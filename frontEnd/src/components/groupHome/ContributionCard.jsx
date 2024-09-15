@@ -1,25 +1,42 @@
 import React, { useState } from 'react';
-import './ContributionCard.css'; // Import your CSS file
+import axios from 'axios';
+import { url } from '../../assets/constants/constants';
+import './ContributionCard.css';
 
-const ContributionCard = () => {
-  const [currentContribution, setCurrentContribution] = useState(13253);
-  const goalContribution = 14000;
+const ContributionCard = ({event, event_id, account_id}) => {
+  const [currentContribution, setCurrentContribution] = useState(event.balance);
+  const goalContribution = Math.round(event.goal * event.participants[0].percentage, 0);
   const [deposit, setDeposit] = useState('');
 
   const handleDepositChange = (e) => {
     setDeposit(e.target.value);
   };
 
-  const handleDepositClick = () => {
-    const newContribution = currentContribution + Number(deposit);
-    setCurrentContribution(newContribution);
-    setDeposit(''); // Clear the deposit input after updating
+  const handleDepositClick = async () => {
+    try {
+      const response = await axios.post(url + `transfer`, {
+        event_id: event_id,
+        userIdAcc: account_id,
+        amount: deposit
+      });
+
+      response;
+
+      const newContribution = currentContribution + Number(deposit);
+      setCurrentContribution(newContribution);
+      setDeposit(''); // Clear the deposit input after updating
+
+    } catch {
+      alert("Error al depositar. Por favor intenta de nuevo");
+    }
   };
 
   const formattedCurrent = new Intl.NumberFormat().format(currentContribution);
   const formattedGoal = new Intl.NumberFormat().format(goalContribution);
   const placeHolder = goalContribution - currentContribution;
   const formatredPlaceHolder= new Intl.NumberFormat().format(placeHolder);
+
+  console.log(event);
 
   return (
     <div className="contribution-card">

@@ -1,15 +1,16 @@
 import "./ParticipantCard.css"
 
-function ParticipantCard({participant}) {
+function ParticipantCard({participant, goal}) {
+    console.log(participant);
 
     return (
         <>
-            <div>
-                <div>
-
+            <div className="participant-container">
+                <div className="participant-initial-container">
+                    <p>{participant.first_name[0]}</p>
                 </div>
                 <div>
-                    holiwis
+                    <p>$ {participant.contribution} /  <span>{goal * participant.percentage / 100}</span></p>
                 </div>
             </div>
         </>

@@ -1,0 +1,30 @@
+.participant-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: black;
+    border-bottom: 1px solid var(--text-color-blue);
+    padding: 1rem;
+}
+
+.participant-initial-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 900;
+    font-size: 22px;
+    height: 3rem;
+    width: 3rem;
+    border-radius: 50%;
+    background-color: var(--text-color-blue);
+}
+
+.participant-container p {
+    font-size: 26px; 
+
+}
+
+.participant-container span {
+    font-size: 18px;
+}

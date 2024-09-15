@@ -9,14 +9,12 @@ function EventCard({ number, event }) {
 
     const colors = ["#2078AE", "#1B5D81", "#003554", "#014A77", "#308DC6", "#2078AE"];
     const backgroundColor = colors[number];
-// ​​
-// type: "savings"
-
-    // Formating deadline
     const deadline = event.deadline;
     const date = new Date(deadline);
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     const formattedDate = date.toLocaleDateString('en-US', options);
+
+    const formattedGoal = event.goal.toLocaleString('en-US');
 
     let typeImg;
 
@@ -26,6 +24,7 @@ function EventCard({ number, event }) {
     } else {
         typeImg = EventImg;
     }
+    console.log(event);
 
     return (
         <>
@@ -39,7 +38,7 @@ function EventCard({ number, event }) {
                     </p>
                 </div>
                 <div className="event-card-middle">
-                    <h2>${event.goal}</h2>
+                    <h2>${formattedGoal}</h2>
                     <img src={typeImg} alt="type image" />
                 </div>
                 <div className="event-card-bottom">
