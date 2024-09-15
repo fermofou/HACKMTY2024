@@ -41,13 +41,15 @@ const EventForm = () => {
           </button>
         </div>
 
-        <label className="inputLabel">Name </label>
-        <input
-          type="text"
-          value={eventName}
-          onChange={(e) => setEventName(e.target.value)}
-          placeholder="Name of the Event"
-        />
+        <div className="name-container">
+          <label className="inputLabel">Name </label>
+          <input
+            type="text"
+            value={eventName}
+            onChange={(e) => setEventName(e.target.value)}
+            placeholder="Name of the Event"
+          />
+        </div>
       </div>
       <div className="button-container">
         <button
@@ -67,7 +69,7 @@ const EventForm = () => {
           <img src={savingsImg} alt="Savings" />
         </button>
       </div>
-      <div>
+      <div className="name-container">
         <label className="inputLabel">Goal</label>
         <input
           type="number"
@@ -76,7 +78,7 @@ const EventForm = () => {
           placeholder="Monetary Goal"
         />
       </div>
-      <div>
+      <div className="name-container">
         <label className="inputLabel">Due Date</label>
         <input
           type="date"
@@ -84,10 +86,12 @@ const EventForm = () => {
           onChange={(e) => setDueDate(e.target.value)}
         />
       </div>
-      <PeopleSelector
-        selectedPeople={selectedPeople}
-        setSelectedPeople={setSelectedPeople}
-      />
+      <div className="name-container">
+        <PeopleSelector
+          selectedPeople={selectedPeople}
+          setSelectedPeople={setSelectedPeople}
+        />
+      </div>
     </form>
   );
 };

@@ -8,6 +8,10 @@
 } */
 
 /* Container */
+
+.name-container {
+  margin: 20px;
+}
 .container {
   max-width: 600px;
   margin: 0 auto;
@@ -85,14 +89,18 @@ form button:hover {
 }
 
 /* Container styling to center buttons */
-button-container {
+.button-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   flex-wrap: wrap; /* Allows wrapping if needed */
+  gap: 5px; /* Control the space between items */
+  padding-left: 50px;
+  padding-right: 50px;
 }
 
 .event-button {
+  display: flex;
   background-color: gray;
   border: none;
   /* padding: 0px 20px; */
@@ -100,9 +108,7 @@ button-container {
   align-items: center;
   height: 70px;
   width: 70px;
-  margin-left: 20%;
   justify-content: center; /* Center horizontally */
-  align-items: center;
 }
 .event-button img {
   width: 40px;
@@ -153,7 +159,7 @@ form input[type="date"] {
   background-color: #d9d9d9;
   color: black;
   font-size: 16px;
-  padding-left: 30px;
+  padding-left: 10px;
 }
 .Screen {
   background-color: #e1e4e5;
