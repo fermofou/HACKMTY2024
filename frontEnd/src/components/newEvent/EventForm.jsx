@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PeopleSelector from "./PeopleSelector";
 import eventImg from "../../assets/eventImg.png";
 import savingsImg from "../../assets/savingsImg.png";
+import { Link, useNavigate } from "react-router-dom";
 
 const EventForm = () => {
   const [eventName, setEventName] = useState("");
@@ -10,19 +11,42 @@ const EventForm = () => {
   const [dueDate, setDueDate] = useState("");
   const [selectedPeople, setSelectedPeople] = useState([]);
 
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (
+      !eventName ||
+      !eventType ||
+      !goal ||
+      !dueDate ||
+      selectedPeople.length === 0
+    ) {
+      return;
+    }
     console.log({ eventName, eventType, goal, dueDate, selectedPeople });
+    navigate("/groups");
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label className="inputLabel">Name of the Event</label>
+        <div className="upperButtons">
+          <Link to="/groups">
+            <button>Cancel</button>
+          </Link>
+
+          <button type="submit" className="submitBtn">
+            Create
+          </button>
+        </div>
+
+        <label className="inputLabel">Name </label>
         <input
           type="text"
           value={eventName}
           onChange={(e) => setEventName(e.target.value)}
+          placeholder="Name of the Event"
         />
       </div>
       <div className="button-container">
@@ -44,11 +68,12 @@ const EventForm = () => {
         </button>
       </div>
       <div>
-        <label className="inputLabel">Monetary Goal</label>
+        <label className="inputLabel">Goal</label>
         <input
           type="number"
           value={goal}
           onChange={(e) => setGoal(e.target.value)}
+          placeholder="Monetary Goal"
         />
       </div>
       <div>
@@ -63,7 +88,6 @@ const EventForm = () => {
         selectedPeople={selectedPeople}
         setSelectedPeople={setSelectedPeople}
       />
-      <button type="submit">Create</button>
     </form>
   );
 };
