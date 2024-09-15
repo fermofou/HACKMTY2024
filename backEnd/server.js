@@ -552,9 +552,20 @@ app.get("/event/:event_id", async (req, res) => {
 
   let event = await Event.findById(event_id).exec();
 
-  event.balance = await getAccountBalance(event.account_id);
+  const balance = await getAccountBalance(event.account_id);
 
-  res.status(200).json(event);
+  const newEvent = {
+    account_id: event.account_id,
+    name: event.name,
+    goal: event.goal,
+    deadline: event.deadline,
+    savings: event.savings,
+    chat: event.chat,
+    participants: event.participants,
+    balance
+  }
+
+  res.status(200).json(newEvent);
 });
 
 // get card details
