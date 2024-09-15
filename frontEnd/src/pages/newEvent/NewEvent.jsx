@@ -1,10 +1,10 @@
-import { Link } from 'react-router-dom'
+import UpperNavbar from "../../components/upperNavbar/UpperNavbar";
 
 function NewEvent() {
 
     return (
         <>
-            <Link to='/groups'>go back</Link>
+            <UpperNavbar />
             <div>
                 <p>newEvent</p>
             </div>
