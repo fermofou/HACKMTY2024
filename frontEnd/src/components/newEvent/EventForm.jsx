@@ -18,7 +18,7 @@ const EventForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label>Name of the Event</label>
+        <label className="inputLabel">Name of the Event</label>
         <input
           type="text"
           value={eventName}
@@ -44,7 +44,7 @@ const EventForm = () => {
         </button>
       </div>
       <div>
-        <label>Monetary Goal</label>
+        <label className="inputLabel">Monetary Goal</label>
         <input
           type="number"
           value={goal}
@@ -52,7 +52,7 @@ const EventForm = () => {
         />
       </div>
       <div>
-        <label>Due Date</label>
+        <label className="inputLabel">Due Date</label>
         <input
           type="date"
           value={dueDate}
