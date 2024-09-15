@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import sendIcon from "../../assets/send.svg";
 import { useEffect, useRef, useState } from "react";
 
@@ -31,7 +31,7 @@ function GroupChat() {
     chatbox.current?.lastElementChild?.scrollIntoView();
   }, [chat?.length]);
 
-  const userId = "3";
+  const userId = localStorage.getItem('selectedUserId');
 
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
@@ -53,6 +53,21 @@ function GroupChat() {
     });
     setMessage("");
   };
+
+  const voteOnPoll = async (poll_index, option) => {
+    await fetch(`${url}answer_poll`, {
+        method: "POST",
+        headers: {
+            'Content-Type': "application/json"
+        },
+        body: JSON.stringify({
+            event_id: groupId,
+            account_id: userId,
+            poll_index,
+            option
+        })
+    });
+}
 
   const handleKeyDown = (e) => {
     if (e.code === "Enter") sendMessage();
@@ -123,9 +138,9 @@ function GroupChat() {
                         }
                     </div>
                     <div className="groupchat-newmessage">
-                        <button className="groupchat-createpoll-button">
+                        <Link to="createPoll" className="groupchat-createpoll-button">
                             Create Poll
-                        </button>
+                        </Link>
                         <div className="groupchat-inputbar">
                             <input type="text" placeholder="Enter message..." value={message} onChange={handleMessageChange} onKeyDown={handleKeyDown}/>
                             <button onClick={sendMessage}><img src={sendIcon} alt="" /></button>

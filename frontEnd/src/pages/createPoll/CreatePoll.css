@@ -1,0 +1,127 @@
+.poll-buttonbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.poll-lightbutton {
+  font-size: 1.3rem;
+  background: none;
+  font-weight: 600;
+  border: none;
+  color: #919191;
+  font-family: Inter;
+}
+
+.poll-button {
+  font-size: 1.3rem;
+  background: none;
+  font-weight: 600;
+  border: none;
+  color: #014A77;
+  font-family: Inter;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.poll-section {
+  margin: 0 16px 20px 16px;
+  overflow: auto;
+  max-height: 450px;
+}
+
+.poll-question-input {
+  width: calc(100% - 40px);
+  height: 40px;
+  padding: 0 20px;
+  margin: 0;
+  border: none;
+  background: #d9d9d9;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  color: black;
+}
+
+.poll-option-input {
+  display: flex;
+  width: 100%;
+  gap: 0;
+  margin-bottom: 10px;
+}
+
+.poll-option-text-input {
+  flex: 1;
+  background: #d9d9d9;
+  outline: none;
+  border: none;
+  height: 40px;
+  padding: 0 20px;
+  font-size: 1rem;
+  border-radius: 10px 0 0 10px;
+  color: black;
+}
+
+.poll-cost-input {
+  flex-basis: 80px;
+  flex-grow: 0;
+  width: 0;
+  background: #014A77;
+  color: white;
+  border: none;
+  outline: none;
+  border-radius: 0 10px 10px 0;
+  padding: 0 15px;
+  font-size: 1rem;
+  text-align: right;
+}
+
+.poll-option-add {
+  background: #d9d9d9;
+  width: 100%;
+  border-radius: 10px;
+  height: 40px;
+  border: none;
+  text-align: left;
+  color: #919191;
+  font-size: 1rem;
+  padding-left: 20px;
+  flex: 3;
+  transition: all 150ms ease;
+}
+
+.poll-option-add:active {
+background: #bababa;
+}
+
+.poll-option-delete {
+  flex: 2;
+  background: #ff4646;
+  width: 100%;
+  border-radius: 10px;
+  height: 40px;
+  border: none;
+  text-align: center;
+  color: white;
+  font-size: 1rem;
+  transition: all 150ms ease;
+}
+
+.poll-option-delete:active {
+  background: #b62c2c;
+}
+
+.poll-cost-input::placeholder {
+  opacity: 0.8;
+  color: white;
+}
+
+.poll-section h1 {
+  color: #919191;
+  font-size: 1.2rem;
+}
+
+.poll-have-gap {
+  gap: 5px;
+}

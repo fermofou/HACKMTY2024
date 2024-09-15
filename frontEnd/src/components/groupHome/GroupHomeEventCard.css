@@ -41,6 +41,10 @@
         font-weight: 300;
         font-size: xx-large;
     }
+
+    span {
+      font-size: 18px;
+    }
 }
 
 .event-card-bottom {

@@ -108,7 +108,7 @@ app.get("/events_savings", async (req, res) => {
 app.post("/event", async (req, res) => {
   // crear tarjeta
   const accountNumber = generateAccountNumber();
-
+  console.log(accountNumber);
   const response = await fetch(
     `${API_BASE}/customers/${process.env.VIRTUAL_USER}/accounts?key=${process.env.CAPITAL_ONE_API_KEY}`,
     {
@@ -125,19 +125,21 @@ app.post("/event", async (req, res) => {
       }),
     }
   );
+
   const data = await response.json();
+  console.log(response);
 
   // Crear evento
   const event = new Event({
     account_id: data.objectCreated._id,
     name: req.body.name,
-    goal: req.body.goal,
+    goal: parseFloat(req.body.goal),
     deadline: req.body.deadline,
     participants: req.body.participants.map((participant) => ({
       account_id: participant.account_id,
       first_name: participant.first_name,
       last_name: participant.last_name,
-      contribution: 0,
+      contribution: parseFloat(0),
       percentage: participant.percentage,
     })),
   });
@@ -154,6 +156,7 @@ app.post("/event", async (req, res) => {
     message: "Event created successfuly",
   });
 });
+
 /*/ para llamar:
 a pagar:
 {
@@ -219,6 +222,8 @@ app.post("/transfer", async (req, res) => {
         }),
       }
     );
+
+    console.log(response);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -320,44 +325,28 @@ app.post("/savings", async (req, res) => {
   const timeDiff = Math.abs(deadline - today);
   const months = Math.ceil(timeDiff / (1000 * 60 * 60 * 24 * 30)); // Convert time difference to months
 
-  const montlyPayment =
-    req.body.goal / req.body.months / req.body.participants.length;
+  const montlyPayment = req.body.goal / months / req.body.participants.length;
 
   // Crear evento
-  if (req.body.type === "savings") {
-    const event = new Event({
-      account_id: data.objectCreated._id,
-      name: req.body.name,
-      goal: req.body.goal,
-      deadline: req.body.deadline,
-      participants: req.body.participants.map((participant) => ({
-        account_id: participant.account_id,
-        first_name: participant.first_name,
-        last_name: participant.last_name,
-        contribution: 0,
-        percentage: participant.percentage,
-      })),
-      savings: {
-        months,
-        montlyPayment,
-      },
-    });
-  } else {
-    const event = new Event({
-      account_id: data.objectCreated._id,
-      name: req.body.name,
-      goal: req.body.goal,
-      deadline: req.body.deadline,
-      participants: req.body.participants.map((participant) => ({
-        account_id: participant.account_id,
-        first_name: participant.first_name,
-        last_name: participant.last_name,
-        contribution: 0,
-        percentage: participant.percentage,
-      })),
-      savings: null, // Set savings field
-    });
-  }
+
+  const event = new Event({
+    account_id: data.objectCreated._id,
+    name: req.body.name,
+    goal: parseFloat(req.body.goal),
+    deadline: deadline,
+    participants: req.body.participants.map((participant) => ({
+      account_id: participant.account_id,
+      first_name: participant.first_name,
+      last_name: participant.last_name,
+      contribution: parseFloat(0),
+      percentage: participant.percentage,
+    })),
+    savings: {
+      months,
+      montlyPayment,
+    },
+  });
+
   try {
     await event.save();
   } catch (err) {
@@ -365,7 +354,6 @@ app.post("/savings", async (req, res) => {
       message: "Something went wrong, try again later.",
     });
   }
-
   res.status(200).json({
     message: "Event created successfuly",
   });
@@ -672,6 +660,48 @@ app.get("/clients", async (req, res) => {
     );
 
     res.status(200).json(filteredClients);
+  } catch (error) {
+    console.error("Error during fetch operation:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get("/users", async (req, res) => {
+  try {
+    const response = await fetch(
+      `${API_BASE}/customers?key=${process.env.CAPITAL_ONE_API_KEY}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const clients = await response.json();
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${clients.status}`);
+    }
+    // Filter the clients array to exclude the customer with id equal to VIRTUAL_USER
+    const filteredClients = clients.filter(
+      (client) => client._id !== process.env.VIRTUAL_USER
+    );
+
+    const clientAccounts = await Promise.all(
+      clients.map(async (client) => {
+        const response2 = await fetch(
+          `${API_BASE}/customers/${client._id}/accounts?key=${process.env.CAPITAL_ONE_API_KEY}`
+        );
+        const data2 = await response2.json();
+        return {
+          name: client.first_name + " " + client.last_name,
+          account_id: data2[0]._id,
+        };
+      })
+    );
+
+    res.status(200).json(clientAccounts);
   } catch (error) {
     console.error("Error during fetch operation:", error);
     res.status(500).json({ error: error.message });

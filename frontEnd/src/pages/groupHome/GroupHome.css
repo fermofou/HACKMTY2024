@@ -2,3 +2,12 @@
     padding-top: 1rem;
     height: calc(100vh - 10rem);
 }
+
+.group-home-participant-container {
+    background-color: white;
+    margin: 0 1rem;
+    border-radius: 10px;
+    height: 17.5rem;
+    overflow-y: auto; /* Enable vertical scrolling when content exceeds the height */
+    padding: 1rem;
+}

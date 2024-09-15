@@ -10,6 +10,7 @@ import ChatGrayIcon from '../../assets/chatGrayIcon.svg';
 import HomeGrayIcon from '../../assets/homeGrayIcon.svg';
 import { url }from '../../assets/constants/constants'
 import "./Group.css";
+import CreatePoll from '../createPoll/CreatePoll';
 
 function Group() {
     const { groupId } = useParams();
@@ -45,6 +46,7 @@ function Group() {
                 <Route path="" element={<GroupHome />} />
                 <Route path="groupHome" element={<GroupHome />} />
                 <Route path="groupChat" element={<GroupChat />} />
+                <Route path="groupChat/createPoll" element={<CreatePoll />} />
                 <Route path="groupCard" element={<GroupCard />} />
             </Routes>
             <nav className="bottom-nav">

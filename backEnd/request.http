@@ -81,3 +81,16 @@ GET http://127.0.0.1:3000/card/66e60dc24645973fb256c706
 
 ###
 GET http://127.0.0.1:3000/event/66e60dc24645973fb256c706
+
+###
+POST http://127.0.0.1:3000/transfer
+Content-Type: application/json
+
+{
+  "event_id": "66e60dc24645973fb256c706",
+  "userIdAcc": "66e5fb759683f20dd5189bc5",
+  "amount": 100
+}
+
+###
+GET http://127.0.0.1:3000/users
