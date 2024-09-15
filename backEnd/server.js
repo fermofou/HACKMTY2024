@@ -440,36 +440,6 @@ app.get("/card/:event_id", async (req, res) => {
   });
 });
 
-// todos los clientes
-app.get("/clients", async (req, res) => {
-  try {
-    const response = await fetch(
-      `http://api.nessieisreal.com/customers?key=${process.env.CAPITAL_ONE_API_KEY}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const clients = await response.json();
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${clients.status}`);
-    }
-    // Filter the clients array to exclude the customer with id equal to VIRTUAL_USER
-    const filteredClients = clients.filter(
-      (client) => client._id !== process.env.VIRTUAL_USER
-    );
-
-    res.status(200).json(filteredClients);
-  } catch (error) {
-    console.error("Error during fetch operation:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
 app.get("/clients", async (req, res) => {
   try {
     const people = await Person.find().exec();
