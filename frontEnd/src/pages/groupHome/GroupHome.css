@@ -8,7 +8,7 @@
   background-color: white;
   margin: 0 1rem;
   border-radius: 10px;
-  height: 45%;
+  height: 40%;
   overflow-y: auto; /* Enable vertical scrolling when content exceeds the height */
   padding: 1rem;
 }

@@ -42,6 +42,7 @@ function GroupHome() {
             event_id={groupId}
             account_id={userId}
           />
+
           <div className="group-home-participant-container">
             {eventDetail.participants.map((participant, index) => (
               <ParticipantCard

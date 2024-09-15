@@ -1,10 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
 .groupchat-container {
-  background: #F0F0F0;
-  height: calc(100vh - 156px);
+  background: #f0f0f0;
+  /* height: calc(100vh - 156px); */
+  height: 76%;
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   box-shadow: var(--box-shadow-default);
   color: white;
 }
@@ -29,7 +30,7 @@
   width: 100%;
   padding: 5px 0;
   text-align: center;
-  background: #014A77;
+  background: #014a77;
   border-radius: 5px;
 }
 
@@ -39,8 +40,8 @@
 }
 
 .groupchat-other {
-  background: #066BA7;
-  max-width: 282px;
+  background: #066ba7;
+  max-width: 60%;
   width: fit-content;
   border-radius: 5px;
   padding: 10px;
@@ -49,7 +50,7 @@
 .groupchat-own {
   margin-left: auto;
   background: #919191;
-  max-width: 282px;
+  max-width: 60%;
   width: fit-content;
   border-radius: 5px;
   padding: 10px;
@@ -93,7 +94,7 @@
   position: absolute;
   width: 10px;
   height: 10px;
-  content: '';
+  content: "";
   background: transparent;
   border: 2px solid white;
   border-radius: 50%;
@@ -121,7 +122,7 @@ p.groupchat-pollover {
 p.groupchat-poll-cost {
   font-weight: 100;
   margin: 0;
-  font-size: .9rem;
+  font-size: 0.9rem;
 }
 
 .groupchat-poll-option {
@@ -136,7 +137,7 @@ p.groupchat-poll-cost {
   outline: none;
   border: none;
   font-size: 1rem;
-  color: #014A77;
+  color: #014a77;
   font-weight: bold;
   margin: 0;
   padding: 0;
@@ -169,7 +170,7 @@ p.groupchat-poll-cost {
 }
 
 .groupchat-inputbar input:focus {
-  border: 2px solid #014A77;
+  border: 2px solid #014a77;
 }
 
 .groupchat-inputbar button {
@@ -185,7 +186,7 @@ p.groupchat-poll-cost {
   height: 40px;
   width: 40px;
   border-radius: 50%;
-  border: 4px solid rgba(255,255,255,0);
+  border: 4px solid rgba(255, 255, 255, 0);
   border-top-color: 4px solid #7fc4d1;
   border-right-color: 4px solid #7fc4d1;
   -webkit-animation: single2 1s infinite linear;
@@ -194,38 +195,38 @@ p.groupchat-poll-cost {
 
 @-webkit-keyframes single2 {
   0% {
-     -webkit-transform: rotate(0deg);
-     transform: rotate(0deg);
-     border-top-color: #7fc4d1;
-     border-right-color: #7fc4d1;
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+    border-top-color: #7fc4d1;
+    border-right-color: #7fc4d1;
   }
   50% {
-     border-top-color: #1f4f58;
-     border-right-color: #1f4f58;
+    border-top-color: #1f4f58;
+    border-right-color: #1f4f58;
   }
   100% {
-     -webkit-transform: rotate(720deg);
-     transform: rotate(720deg);
-     border-top-color: #7fc4d1;
-     border-right-color: #7fc4d1;
+    -webkit-transform: rotate(720deg);
+    transform: rotate(720deg);
+    border-top-color: #7fc4d1;
+    border-right-color: #7fc4d1;
   }
 }
 
 @keyframes single2 {
   0% {
-     -webkit-transform: rotate(0deg);
-     transform: rotate(0deg);
-     border-top-color: #7fc4d1;
-     border-right-color: #7fc4d1;
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+    border-top-color: #7fc4d1;
+    border-right-color: #7fc4d1;
   }
   50% {
-     border-top-color: #1f4f58;
-     border-right-color: #1f4f58;
+    border-top-color: #1f4f58;
+    border-right-color: #1f4f58;
   }
   100% {
-     -webkit-transform: rotate(720deg);
-     transform: rotate(720deg);
-     border-top-color: #7fc4d1;
-     border-right-color: #7fc4d1;
+    -webkit-transform: rotate(720deg);
+    transform: rotate(720deg);
+    border-top-color: #7fc4d1;
+    border-right-color: #7fc4d1;
   }
 }
