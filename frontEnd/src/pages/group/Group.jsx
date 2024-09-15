@@ -1,4 +1,7 @@
+import { useState, useEffect} from 'react';
 import { useParams, Link, Route, Routes } from 'react-router-dom';
+import axios from 'axios';
+import UpperNavbar from "../../components/upperNavbar/UpperNavbar";
 import GroupHome from '../groupHome/GroupHome';
 import GroupChat from '../groupChat/GroupChat';
 import GroupCard from '../groupCard/GroupCard';
@@ -6,10 +9,32 @@ import GroupCard from '../groupCard/GroupCard';
 function Group() {
     const { groupId } = useParams();
 
+    const [eventDetail, setEventDetail] = useState([]);
+
+    useEffect(() => {
+        async function fetchEventDetails() {
+            try {
+                const response = await axios.get("http://localhost:3000/" + `event/${groupId}`)
+                setEventDetail(response.data);
+
+            } catch (error) {
+                console.log("Error fetching event" + error);
+            }
+        }
+
+        fetchEventDetails();
+    }, []);
+
+    let type = "event";
+
+    if (eventDetail.savings) {
+        type = "savings";
+    }
+
     return (
         <>
             <div>
-                <Link to="/groups">go back</Link>
+                <UpperNavbar text={eventDetail.name} type={type}/>
             </div>
             <Routes>
                 <Route path="" element={<GroupHome />} />
