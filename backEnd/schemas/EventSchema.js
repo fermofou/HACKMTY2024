@@ -1,10 +1,9 @@
-import mongoose, {Schema, model} from 'mongoose';
-import { savingsSchema } from './SavingsSchema.js';
-import { messageSchema } from './MessageSchema.js';
-import { participantSchema } from './ParticipantSchema.js';
+import mongoose, { Schema, model } from "mongoose";
+import { savingsSchema } from "./SavingsSchema.js";
+import { messageSchema } from "./MessageSchema.js";
+import { participantSchema } from "./ParticipantSchema.js";
 
 const eventSchema = new Schema({
-  account_id: String,
   name: String,
   goal: Number,
   deadline: Date,
@@ -12,8 +11,8 @@ const eventSchema = new Schema({
   chat: [messageSchema],
   participants: [participantSchema],
   card_number: String,
-  balance: Number
+  balance: Number,
 });
 
-const Event = model('Event', eventSchema);
+const Event = model("Event", eventSchema);
 export default Event;

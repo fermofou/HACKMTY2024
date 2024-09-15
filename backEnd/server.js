@@ -74,10 +74,9 @@ app.get("/events_savings", async (req, res) => {
 app.post("/event", async (req, res) => {
   // crear tarjeta
   const card_number = generateCardNumber();
-
+  const data = req.body;
   // Crear evento
   const event = new Event({
-    account_id: data.objectCreated._id,
     name: req.body.name,
     goal: parseFloat(req.body.goal),
     deadline: req.body.deadline,
@@ -109,12 +108,20 @@ app.post("/savings", async (req, res) => {
   // crear tarjeta
   const card_number = generateCardNumber();
 
+  const data = req.body;
+  const today = new Date();
+  const datelineFormatted = new Date(data.deadline);
+  const timeDiff = Math.abs(datelineFormatted - today);
+  const months = Math.ceil(timeDiff / (1000 * 60 * 60 * 24 * 30)); // Convert time difference to months
+
+  const monthlyPayment =
+    parseFloat(req.body.goal) / months / req.body.participants.length; // Use calculated months
+
   // Crear evento
   const event = new Event({
-    account_id: data.objectCreated._id,
     name: req.body.name,
     goal: parseFloat(req.body.goal),
-    deadline: deadline,
+    deadline: datelineFormatted,
     participants: req.body.participants.map((participant) => ({
       account_id: participant.account_id,
       first_name: participant.first_name,
@@ -124,7 +131,7 @@ app.post("/savings", async (req, res) => {
     })),
     savings: {
       months,
-      montlyPayment,
+      monthlyPayment,
     },
     card_number,
     balance: 0,
