@@ -1,80 +1,62 @@
-import { useParams } from 'react-router-dom';
-import sendIcon from '../../assets/send.svg';
-import { useEffect, useRef, useState } from 'react';
+import { useParams } from "react-router-dom";
+import sendIcon from "../../assets/send.svg";
+import { useEffect, useRef, useState } from "react";
 
-import './GroupChat.css';
-import { url } from '../../assets/constants/constants';
-
+import "./GroupChat.css";
+import { url } from "../../assets/constants/constants";
 
 function GroupChat() {
-    const { groupId } = useParams();
+  const { groupId } = useParams();
 
-    const [chat, setChat] = useState(undefined);
-    const [message, setMessage] = useState("");
+  const [chat, setChat] = useState(undefined);
+  const [message, setMessage] = useState("");
 
-    const chatbox = useRef();
+  const chatbox = useRef();
 
-    const fetchData = async () => {
-        const response = await fetch(`${url}chat/${groupId}`);
-        const data = await response.json();
-        setChat(data);
-    };
+  const fetchData = async () => {
+    const response = await fetch(`${url}chat/${groupId}`);
+    const data = await response.json();
+    setChat(data);
+  };
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            fetchData();
-        }, 1000)
-        
-        return () => clearInterval(interval)
-    }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchData();
+    }, 1000);
 
-    
-    useEffect(() => {
-        chatbox.current?.lastElementChild?.scrollIntoView();
-    }, [chat?.length]);
+    return () => clearInterval(interval);
+  }, []);
 
-    const userId = "1";
+  useEffect(() => {
+    chatbox.current?.lastElementChild?.scrollIntoView();
+  }, [chat?.length]);
 
-    const handleMessageChange = (e) => {
-        setMessage(e.target.value);
-    }
+  const userId = "3";
 
-    const sendMessage = async () => {
+  const handleMessageChange = (e) => {
+    setMessage(e.target.value);
+  };
 
-        if (message === "") return;
+  const sendMessage = async () => {
+    if (message === "") return;
 
-        await fetch(`${url}chat`, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                event_id: groupId,
-                author_id: userId,
-                text: message,
-            })
-        });
-        setMessage("");
-    }
+    await fetch(`${url}chat`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event_id: groupId,
+        author_id: userId,
+        text: message,
+      }),
+    });
+    setMessage("");
+  };
 
-    const voteOnPoll = async (poll_index, option) => {
-        await fetch(`${url}answer_poll`, {
-            method: "POST",
-            headers: {
-                'Content-Type': "application/json"
-            },
-            body: JSON.stringify({
-                event_id: groupId,
-                account_id: userId,
-                poll_index,
-                option
-            })
-        });
-    }
-
-    const handleKeyDown = (e) => {
-        if(e.code === "Enter") sendMessage();
-    }
+  const handleKeyDown = (e) => {
+    if (e.code === "Enter") sendMessage();
+  };
 
     return (
         <>
