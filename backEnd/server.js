@@ -5,6 +5,7 @@ import Event from "./schemas/EventSchema.js";
 import Message from "./schemas/MessageSchema.js";
 import Poll from "./schemas/PollSchema.js";
 import cors from "cors";
+import Person from "./schemas/PersonSchema.js";
 
 dotenv.config();
 const app = express();
@@ -174,122 +175,36 @@ body de /transfer:
 
 /*/
 app.post("/transfer", async (req, res) => {
-  const date = getCurrentDate();
+
+  const userIdAcc = req.body.userIdAcc;
   const event_id = req.body.event_id;
+  const amount = req.body.amount;
+
   //   console.log("event_id", event_id);
   const event = await Event.findById(event_id).exec();
   //   console.log("event", event);
   if (!event) {
     return res.status(404).send("Event not found");
   }
-  const account = event.account_id;
 
-  //   console.log("account_id es", account);
+  const person = await Person.findById(userIdAcc).exec();
 
-  //   const event = await Event.findById(event_id).exec();
-
-  try {
-    const response = await fetch(
-      `${API_BASE}/accounts/${req.body.userIdAcc}/transfers?key=${process.env.CAPITAL_ONE_API_KEY}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          medium: "balance",
-          payee_id: account,
-          transaction_date: date,
-          status: "pending",
-          amount: req.body.amount,
-          description: "pago",
-        }),
-      }
-    );
-
-    console.log(response);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    // console.log("Response data:", data);
-
-    const transferId = data.objectCreated._id;
-    // console.log("transferId", transferId);
-
-    // Call the checkTransfer function asynchronously to avoid blocking the response
-    setTimeout(async () => {
-      try {
-        // Await the async function checkTransfer
-        const transferStatusMessage = await checkTransfer(transferId, event);
-        console.log(`Transfer ID ${transferId}: ${transferStatusMessage}`);
-      } catch (error) {
-        console.error(
-          `Error checking transfer status for ID ${transferId}:`,
-          error
-        );
-      }
-    }, 60000); // Wait for 45 seconds
-
-    // Respond immediately to the client
-    res.status(200).json({
-      message: "Transfer initiated, status will be checked after 45 seconds.",
-      transferId,
-    });
-  } catch (error) {
-    console.error("Error during transfer creation:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-const checkTransfer = async (transferId, event) => {
-  console.log(
-    "1 min has passed. Checking transfer status for transfer ID:",
-    transferId
-  );
-
-  try {
-    const response = await fetch(
-      `${API_BASE}/transfers/${transferId}?key=${process.env.CAPITAL_ONE_API_KEY}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    const status = data.status;
-
-    if (status === "executed") {
-      const participant = getParticipant(event, data.payer_id);
-      participant.contribution += data.amount;
-      await event.save();
-      logToChat(
+  if (person.balance >= amount) {
+    person.balance -= amount;
+    event.balance += amount;
+    person.save();
+    event.save();
+    logToChat(
         event._id,
         `${participant.first_name} deposited $${Intl.NumberFormat().format(
-          data.amount
+            data.amount
         )}.`
-      );
-      return "succesful";
-    } else if (status === "cancelled") {
-      console.log("Transaction unsuccessful");
-      return "unsuccessful";
-    } else {
-      console.log("Transaction pending");
-      return checkTransfer(transferId, event);
-    }
-  } catch (error) {
-    console.error("Error during fetch operation:", error);
+    );
+  } else {
+    res.status(401).send("Not enough funds");
   }
-};
+
+});
 
 const getAuthorName = (event, author_id) => {
   let author = "";
@@ -557,102 +472,8 @@ app.get("/clients", async (req, res) => {
 
 app.get("/clients", async (req, res) => {
   try {
-    const response = await fetch(
-      `${API_BASE}/customers?key=${process.env.CAPITAL_ONE_API_KEY}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const clients = await response.json();
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${clients.status}`);
-    }
-    // Filter the clients array to exclude the customer with id equal to VIRTUAL_USER
-    const filteredClients = clients.filter(
-      (client) => client._id !== process.env.VIRTUAL_USER
-    );
-
-    res.status(200).json(filteredClients);
-  } catch (error) {
-    console.error("Error during fetch operation:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get("/users", async (req, res) => {
-  try {
-    const response = await fetch(
-      `${API_BASE}/customers?key=${process.env.CAPITAL_ONE_API_KEY}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const clients = await response.json();
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${clients.status}`);
-    }
-    // Filter the clients array to exclude the customer with id equal to VIRTUAL_USER
-    const filteredClients = clients.filter(
-      (client) => client._id !== process.env.VIRTUAL_USER
-    );
-
-    const clientAccounts = await Promise.all(
-      clients.map(async (client) => {
-        const response2 = await fetch(
-          `${API_BASE}/customers/${client._id}/accounts?key=${process.env.CAPITAL_ONE_API_KEY}`
-        );
-        const data2 = await response2.json();
-        return {
-          name: client.first_name + " " + client.last_name,
-          account_id: data2[0]._id,
-        };
-      })
-    );
-
-    res.status(200).json(clientAccounts);
-  } catch (error) {
-    console.error("Error during fetch operation:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get("/firstAcc/:customerId", async (req, res) => {
-  const customerId = req.params.customerId;
-
-  try {
-    const response = await fetch(
-      `${API_BASE}/customers/${customerId}/accounts?key=${process.env.CAPITAL_ONE_API_KEY}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const accounts = await response.json();
-
-    if (accounts.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No accounts found for this customer" });
-    }
-
-    res.status(200).json(accounts[0]);
+    const people = await Person.find().exec();
+    res.status(200).json(people);
   } catch (error) {
     console.error("Error during fetch operation:", error);
     res.status(500).json({ error: error.message });

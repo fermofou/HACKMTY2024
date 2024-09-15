@@ -6,5 +6,5 @@ export const personSchema = new Schema({
   last_name: String
 })
 
-const Message = model('Person', personSchema);
-export default Message;
+const Person = model('Person', personSchema);
+export default Person;
