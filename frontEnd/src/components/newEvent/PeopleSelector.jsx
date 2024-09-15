@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./PeopleSelector.css"; // Import your CSS file
 
 const PeopleSelector = ({ selectedPeople, setSelectedPeople }) => {
   const [people, setPeople] = useState([]);
@@ -28,17 +29,25 @@ const PeopleSelector = ({ selectedPeople, setSelectedPeople }) => {
     );
   };
 
+  const getInitial = (name) => {
+    return name.charAt(0); // Get the first letter of the person's first name
+  };
+
   return (
     <div>
       <label className="inputLabel">People</label>
       {people.map((person) => (
-        <div key={person}>
-          <input
-            type="checkbox"
-            checked={selectedPeople.includes(person)}
-            onChange={() => togglePerson(person)}
-          />
-          {person}
+        <div className="list-item" key={person}>
+          <label className="custom-checkbox">
+            <input
+              type="checkbox"
+              checked={selectedPeople.includes(person)}
+              onChange={() => togglePerson(person)}
+            />
+            <span className="checkbox-circle">{getInitial(person)}</span>
+            <span className="name">{person}</span>
+            <span className="checkmark">✔</span>
+          </label>
         </div>
       ))}
     </div>
