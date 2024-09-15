@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
+import axios from 'axios'
 import EventCard from '../../components/groups/EventCard'
 import CapitalOneLogo from '../../assets/CapitalOneLogo.png'
 import PlusImg from '../../assets/createNewEventPlusImg.png'
@@ -6,14 +8,24 @@ import PlusImg from '../../assets/createNewEventPlusImg.png'
 import "./Groups.css"
 
 function Groups() {
-    const groupsSamples = [
-        { groupId: 1 },
-        { groupId: 2 },
-        { groupId: 3 },
-        { groupId: 4 },
-        { groupId: 5 },
-        { groupId: 6 }
-    ];
+    const url = "http://localhost:3000/"
+
+    const [events, setEvents] = useState([]);
+
+    useEffect(() => {
+        async function fecthEvents() {
+            try {
+                const response = await axios.get(url + `events_savings?account_id=1`);
+                setEvents(await response.data)
+
+            } catch (error) {
+                console.log("Error fecthing evetns: " + error);
+            }
+        }
+
+        fecthEvents();
+
+    }, []);
 
     return (
         <>
@@ -29,10 +41,10 @@ function Groups() {
                     </Link>
                 </div>
                 <div className='events-container'>
-                        {groupsSamples.map((event, index) => (
+                        {events.map((event, index) => (
                             <li key={`${event.groupId}-${index}`}>
                                 <Link to={`/group/${event.groupId}`}>
-                                    <EventCard number={(index % 5) + 1} />
+                                    <EventCard number={(index % 5) + 1} event={event} />
                                 </Link>
                             </li>
                         ))}
