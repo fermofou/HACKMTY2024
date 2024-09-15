@@ -1,0 +1,59 @@
+.contribution-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    margin: 16px;
+    text-align: left;
+  }
+  
+  .contribution-label {
+    font-size: 20px;
+    color: #6c757d;
+    font-weight: 600;
+    font-family: Albert Sans;
+    margin: 0;
+  }
+  
+  .contribution-amount {
+    font-size: 36px;
+    color: #004085;
+    font-weight: 200;
+    font-family: Inter;
+    margin: 10px 0;
+  }
+  
+  .goal-amount {
+    font-size: 16px;
+    color: #6c757d;
+    font-weight: 500;
+    font-family: Inter;
+  }
+  
+  .deposit-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .deposit-input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    color: #6c757d;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #eee;
+    outline: none;
+  }
+  
+  .deposit-button {
+    background-color: #004085;
+    color: white;
+    font-size: 14px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  

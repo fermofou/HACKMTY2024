@@ -1,21 +1,14 @@
-import { useParams} from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import CardComponent from '../../components/groups/CardComponent'; 
-import { useState} from 'react'
+import { url }from '../../assets/constants/constants'
+
 
 import "./GroupCard.css"
 
 function GroupCard() {
     const { groupId } = useParams();
-    
-    const [cardData] = useState({
-        balance: 130433,
-        card_number: "6338 9041 9249 8584",
-        expiry_date: "11 / 24",
-        cvv: "772",
-        name: "Barcelona Trip"
-      });
-      
-    const formattedBalance = new Intl.NumberFormat().format(cardData.balance);
 
     const [transactions] = useState([
         ["450", "Taxi from Airport"],
@@ -26,13 +19,33 @@ function GroupCard() {
         ["200", "Museum Tickets"]
       ]);
 
+    const [card, setCard] = useState([]);
+
+    const formattedBalance = new Intl.NumberFormat().format(card.balance);
+
+    useEffect(() => {
+        async function fecthCardData() {
+            try {
+                const response = await axios.get(url + `card/${groupId}`);
+                setCard(response.data);
+
+            } catch (error) {
+                console.log("Error fetching card data: " + error);
+            }
+        }
+
+        fecthCardData();
+    }, []);
+
+    console.log(card);
+
     return (
         <>
             <CardComponent
-                title={cardData.name}
-                cardNumber={cardData.card_number}
-                expirationDate={cardData.expiry_date}
-                cvv={cardData.cvv}
+                title={card.name}
+                cardNumber={card.card_number}
+                expirationDate={card.expiry_date}
+                cvv={card.cvv}
             />
 
             <div className='balance-card'>
@@ -48,9 +61,9 @@ function GroupCard() {
                 <p>Transactions</p>
                 <ul>
                     {transactions.map((transaction, index) => (
-                    <li key={index}>
-                        Ammount: $ {transaction[0]} <br/> Description: {transaction[1]} <br/> <p>Report Purchase</p>
-                    </li>
+                        <li key={index}>
+                            Ammount: $ {transaction[0]} <br/> Description: {transaction[1]} <br/> <p>Report Purchase</p>
+                        </li>
                     ))}
                 </ul>
             </div>

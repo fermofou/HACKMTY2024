@@ -56,19 +56,20 @@ form label {
   display: block;
   margin-bottom: 5px;
   color: #014a77;
+  font-size: 18px;
 }
 .inputLabel {
   color: #919191;
 }
 
-form input[type="text"],
+/* form input[type="text"],
 form input[type="number"],
 form input[type="date"] {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
-}
+} */
 
 form button {
   background-color: #014a77;
@@ -132,6 +133,8 @@ button-container {
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
+  font-size: 22px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Add shadow to navbar */
 }
 
 .upper-navbar-container p {
@@ -139,14 +142,42 @@ button-container {
   padding: 0;
 }
 
-form input[type="text"] {
+form input[type="text"],
+form input[type="number"],
+form input[type="date"] {
   width: 60%;
+  align-items: center;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 0px;
   border-radius: 5px;
   background-color: #d9d9d9;
   color: black;
+  font-size: 16px;
+  padding-left: 30px;
 }
 .Screen {
   background-color: #e1e4e5;
+}
+.upperButtons {
+  display: flex;
+  justify-content: space-between; /* Distribute space between the buttons */
+  align-items: center; /* Center the buttons vertically */
+  width: 100%; /* Ensure the div takes the full width of the parent */
+}
+
+.upperButtons button {
+  background-color: transparent;
+  color: #919191;
+  height: 20px;
+  font-size: 18px;
+  /* Distribute space between the buttons */
+}
+.upperButtons button.selected {
+  background-color: transparent;
+}
+
+.upperButtons .submitBtn {
+  background-color: transparent;
+  color: #014a77;
+  border: none;
 }

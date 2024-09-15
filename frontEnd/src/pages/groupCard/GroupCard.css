@@ -47,35 +47,38 @@
     padding: 20px;
     font-family: Albert Sans;
     color: #919191;
-  }
+    
+    max-height: 175px; /* Limiting the height to make it scrollable */
+    overflow-y: auto; /* Enable vertical scrolling when content exceeds the height */
+}
 
-  .transactions p {
+.transactions p {
     font-size: 20px;
     margin: 0;
     font-weight: 600;
-  }
+}
 
-  .transactions ul {
+.transactions ul {
     list-style: none;
     padding: 0;
-  }
+    margin: 0; /* Remove margin to ensure the list fits within the container */
+}
 
-li {
-    font-size: 15;
+.transactions li {
+    font-size: 15px; /* Add 'px' to properly set the font size */
     font-weight: 500;
     margin-bottom: 10px;
-  }
+}
 
-  .transactions li:not(:last-child) {
+.transactions li:not(:last-child) {
     border-bottom: 1px solid #ccc; /* Add a line between all list items except the last one */
-  }
+}
 
-  .transactions li:not(:first-child) {
-    margin-top:20px;
+.transactions li:not(:first-child) {
+    margin-top: 20px;
+}
 
-  }
-
-  .transactions li p {
+.transactions li p {
     font-size: 15px;
     color: #FF3A2F;
-  }
+}

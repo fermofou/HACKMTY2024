@@ -16,6 +16,7 @@ function UpperNavbar({ text, type }) {
   } else {
     typeImg = EventImg;
   }
+  const iconStyle = type === "none" ? { width: "0px", height: "0px" } : {};
 
   return (
     <>
@@ -24,7 +25,16 @@ function UpperNavbar({ text, type }) {
           <img src={Arrow} alt="arrow" />
         </Link>
         <p>{text}</p>
-        {(typeImg = <img className="icon" src={typeImg} alt="type image" />)}
+        {
+          (typeImg = (
+            <img
+              className="icon"
+              src={typeImg}
+              alt="type image"
+              style={iconStyle}
+            />
+          ))
+        }
       </div>
     </>
   );
