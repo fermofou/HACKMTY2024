@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./PeopleSelector.css"; // Import your CSS file
+import { url } from "../../assets/constants/constants";
 
-const API_BASE = "https://hackmty2024.onrender.com"; // Replace with your actual API base URL
+// const API_BASE = "https://hackmty2024.onrender.com"; // Replace with your actual API base URL
 
 const PeopleSelector = ({ selectedPeople, setSelectedPeople }) => {
   const [people, setPeople] = useState([]);
@@ -9,7 +10,7 @@ const PeopleSelector = ({ selectedPeople, setSelectedPeople }) => {
   useEffect(() => {
     const fetchPeople = async () => {
       try {
-        const response = await fetch(`${API_BASE}/clients`);
+        const response = await fetch(`${url}clients`);
         const data = await response.json();
 
         const peopleWithAccounts = await Promise.all(

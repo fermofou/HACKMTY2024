@@ -31,7 +31,12 @@
 }
 
 .bar {
-  height: 100px;
+  margin-top: auto;
   flex: 1;
-  background: blue;
+  background: rgb(57, 57, 156);
+  border-radius: 10px 10px 0 0;
+}
+
+.full-height {
+  height: calc(100vh - 100px);
 }

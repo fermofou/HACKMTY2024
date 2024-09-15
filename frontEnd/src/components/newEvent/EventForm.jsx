@@ -62,15 +62,15 @@ const EventForm = () => {
         // console.log(response);
         if (response.ok) {
           const data = await response.json();
-          alert(data.message);
+          // alert(data.message);
           navigate("/groups"); // Navigate to a success page or another route
         } else {
           const errorData = await response.json();
-          alert(errorData.message);
+          // alert(errorData.message);
         }
       } catch (error) {
         console.error("Error:", error);
-        alert("Something went wrong, please try again later.");
+        // alert("Something went wrong, please try again later.");
       }
     } else {
       try {
@@ -89,11 +89,11 @@ const EventForm = () => {
           navigate("/groups"); // Navigate to a success page or another route
         } else {
           const errorData = await response.json();
-          alert(errorData.message);
+          // alert(errorData.message);
         }
       } catch (error) {
         console.error("Error:", error);
-        alert("Something went wrong, please try again later.");
+        // alert("Something went wrong, please try again later.");
       }
     }
   };
