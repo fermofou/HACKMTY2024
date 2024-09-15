@@ -23,6 +23,7 @@ function GroupChat() {
     const interval = setInterval(() => {
       fetchData();
     }, 1000);
+    fetchData();
 
     return () => clearInterval(interval);
   }, []);

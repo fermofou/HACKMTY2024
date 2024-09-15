@@ -13,17 +13,22 @@ function GroupHome() {
     const [eventDetail, setEventDetail] = useState(null);
     const userId = localStorage.getItem('selectedUserId');
 
-    useEffect(() => {
-        async function fetchEventDetails() {
-            try {
-                const response = await axios.get(url + `event/${groupId}`);
-                setEventDetail(response.data);
-            } catch (error) {
-                console.log("Error fetching event" + error);
-            }
+    async function fetchEventDetails() {
+        try {
+            const response = await axios.get(url + `event/${groupId}`);
+            setEventDetail(response.data);
+        } catch (error) {
+            console.log("Error fetching event" + error);
         }
-
+    }
+    
+    useEffect(() => {
+        const interval = setInterval(() => {
+            fetchEventDetails();
+        }, 1000);
         fetchEventDetails();
+
+        return () => clearInterval(interval);
     }, []);
 
     console.log(eventDetail);
