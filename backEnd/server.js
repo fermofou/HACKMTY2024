@@ -191,6 +191,8 @@ app.post("/transfer", async (req, res) => {
   if (person.balance >= amount) {
     person.balance -= amount;
     event.balance += amount;
+    const participant = getParticipant(event, userIdAcc);
+    participant.contribution += amount;
     person.save();
     event.save();
     logToChat(
@@ -212,6 +214,14 @@ const getAuthorName = (event, author_id) => {
     }
   }
   return author;
+};
+
+const getParticipant = (event, participant_id) => {
+    for (const participant of event.participants) {
+        if (participant.account_id == participant_id) {
+            return participant;
+        }
+    }
 };
 
 // mandar chat
