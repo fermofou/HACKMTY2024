@@ -201,8 +201,8 @@ app.post("/transfer", async (req, res) => {
     event.balance += amount;
     const participant = getParticipant(event, userIdAcc);
     participant.contribution += amount;
-    person.save();
-    event.save();
+    await person.save();
+    await event.save();
     logToChat(
       event._id,
       `${participant.first_name} deposited $${Intl.NumberFormat().format(
@@ -210,8 +210,9 @@ app.post("/transfer", async (req, res) => {
       )}.`
     );
   } else {
-    res.status(401).send("Not enough funds");
+    return res.status(401).send("Not enough funds");
   }
+  res.sendStatus(200);
 });
 
 const getAuthorName = (event, author_id) => {
