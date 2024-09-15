@@ -44,40 +44,51 @@ const EventForm = () => {
     console.log(eventData);
 
     if (eventType === "savings") {
-      const today = new Date();
-      const dueDate = new Date(deadline);
-      const months =
-        (dueDate.getFullYear() - today.getFullYear()) * 12 +
-        (dueDate.getMonth() - today.getMonth());
-      eventData.savings = {
-        months: months,
-        monthlyPayment: goal / selectedPeople.length / 12,
-      };
-    } else {
-      eventData.savings = null;
-    }
-
-    try {
-      const response = await fetch("http://localhost:3000/savings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(eventData),
-      });
-      console.log(JSON.stringify(eventData));
-      console.log(response);
-      if (response.ok) {
-        const data = await response.json();
-        alert(data.message);
-        navigate("/success"); // Navigate to a success page or another route
-      } else {
-        const errorData = await response.json();
-        alert(errorData.message);
+      try {
+        const response = await fetch("http://localhost:3000/savings", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(eventData),
+        });
+        console.log(JSON.stringify(eventData));
+        console.log(response);
+        if (response.ok) {
+          const data = await response.json();
+          alert(data.message);
+          navigate("/groups"); // Navigate to a success page or another route
+        } else {
+          const errorData = await response.json();
+          alert(errorData.message);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Something went wrong, please try again later.");
       }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Something went wrong, please try again later.");
+    } else {
+      try {
+        const response = await fetch("http://localhost:3000/event", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(eventData),
+        });
+        console.log(JSON.stringify(eventData));
+        console.log(response);
+        if (response.ok) {
+          const data = await response.json();
+          alert(data.message);
+          navigate("/success"); // Navigate to a success page or another route
+        } else {
+          const errorData = await response.json();
+          alert(errorData.message);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Something went wrong, please try again later.");
+      }
     }
   };
 
