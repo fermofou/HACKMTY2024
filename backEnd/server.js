@@ -678,7 +678,7 @@ app.get("/clients", async (req, res) => {
   }
 });
 
-app.get("/firstAcc", async (req, res) => {
+app.get("/firstAcc/:customerId", async (req, res) => {
   const customerId = req.params.customerId;
 
   try {

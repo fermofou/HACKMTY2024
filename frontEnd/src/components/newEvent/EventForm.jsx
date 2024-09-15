@@ -15,6 +15,8 @@ const EventForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const percentage = 1 / selectedPeople.length;
+
     if (
       !eventName ||
       !eventType ||
@@ -24,14 +26,37 @@ const EventForm = () => {
     ) {
       return;
     }
-    console.log({ eventName, eventType, goal, dueDate, selectedPeople });
+    // console.log({ eventName, eventType, goal, dueDate, selectedPeople });
+    const parts = selectedPeople.map((person) => ({
+      account_id: person.account_id,
+      first_name: person.first_name,
+      last_name: person.last_name,
+      contribution: 0,
+      percentage: percentage,
+    }));
+
     const eventData = {
       name: eventName,
-      type: eventType,
       goal: parseFloat(goal),
       deadline: dueDate,
-      participants: selectedPeople,
+      participants: parts,
     };
+    console.log(eventData);
+
+    if (eventType === "savings") {
+      const today = new Date();
+      const dueDate = new Date(deadline);
+      const months =
+        (dueDate.getFullYear() - today.getFullYear()) * 12 +
+        (dueDate.getMonth() - today.getMonth());
+      eventData.savings = {
+        months: months,
+        monthlyPayment: goal / selectedPeople.length / 12,
+      };
+    } else {
+      eventData.savings = null;
+    }
+
     try {
       const response = await fetch("http://localhost:3000/savings", {
         method: "POST",
@@ -40,7 +65,8 @@ const EventForm = () => {
         },
         body: JSON.stringify(eventData),
       });
-
+      console.log(JSON.stringify(eventData));
+      console.log(response);
       if (response.ok) {
         const data = await response.json();
         alert(data.message);
