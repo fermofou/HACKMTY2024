@@ -11,6 +11,7 @@ import HomeGrayIcon from '../../assets/homeGrayIcon.svg';
 import { url }from '../../assets/constants/constants'
 import "./Group.css";
 import CreatePoll from '../createPoll/CreatePoll';
+import GroupSavings from '../groupSavings/GroupSavings';
 
 function Group() {
     const { groupId } = useParams();
@@ -45,6 +46,7 @@ function Group() {
             <Routes>
                 <Route path="" element={<GroupHome />} />
                 <Route path="groupHome" element={<GroupHome />} />
+                <Route path="groupHome/savings" element={<GroupSavings />} />
                 <Route path="groupChat" element={<GroupChat />} />
                 <Route path="groupChat/createPoll" element={<CreatePoll />} />
                 <Route path="groupCard" element={<GroupCard />} />

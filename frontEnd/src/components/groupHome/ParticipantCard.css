@@ -3,8 +3,11 @@
     align-items: center;
     justify-content: space-between;
     color: black;
-    border-bottom: 1px solid var(--text-color-blue);
     padding: 1rem;
+}
+
+.participant-container:not(:last-child) {
+    border-bottom: 1px solid var(--text-color-blue);
 }
 
 .participant-initial-container {
@@ -22,7 +25,7 @@
 
 .participant-container p {
     font-size: 26px; 
-
+    margin: 0;
 }
 
 .participant-container span {

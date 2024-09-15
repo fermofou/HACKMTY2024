@@ -7,6 +7,7 @@ import ParticipantCard from "../../components/groupHome/ParticipantCard";
 import { url } from '../../assets/constants/constants';
 
 import "./GroupHome.css";
+import SavingsCard from '../../components/groupHome/SavingsCard.jsx';
 
 function GroupHome() {
     const { groupId } = useParams();
@@ -40,12 +41,12 @@ function GroupHome() {
                     <EventCard event={eventDetail}></EventCard>
                     <ContributionCard event={eventDetail} event_id={groupId} account_id={userId}/>
                     <div className='group-home-participant-container'>
+                        <h1>Your group</h1>
                     {eventDetail.participants.map((participant, index) => (
                         <ParticipantCard key={index} participant={participant} goal={eventDetail.goal}/>
                     ))}
                     </div>
                 </div>
-                
             : <></>}
         </>
     )

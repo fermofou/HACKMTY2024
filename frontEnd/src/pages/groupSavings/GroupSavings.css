@@ -1,0 +1,33 @@
+.savings-card {
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: var(--box-shadow-default);
+  background-color: var(--text-color-white);
+
+  p, h2 {
+      margin: 0;
+      padding: 0;
+      color: var(--text-color-blue);
+      width: fit-content;
+  }
+}
+
+.savings-card h2 {
+  font-size: 20px;
+}
+
+.savings-amount {
+  font-size: 2rem;
+  font-family: Inter;
+  color: var(--text-color-blue);
+}
+
+.chart {
+
+}
+
+.bar {
+  height: 100px;
+  background: blue;
+}

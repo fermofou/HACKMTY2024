@@ -99,3 +99,20 @@
     border-radius: 10px; /* Smooth rounded corners on the fill */
   }
   
+.event-card-bottom-right {
+  display: flex;
+  gap: 35px;
+}
+
+.event-card-savings-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.event-card-savings-link img {
+  width: 1.7rem;
+  height: 1.7rem;
+  margin: 0;
+}

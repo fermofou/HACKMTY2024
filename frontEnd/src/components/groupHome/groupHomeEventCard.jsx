@@ -1,8 +1,13 @@
 import PersonImage from "../../assets/personImage.png";
+import GraphImage from "../../assets/graph.svg";
 
 import "./GroupHomeEventCard.css";
+import { Link, useParams } from "react-router-dom";
 
 function EventCard({ event }) {
+
+    const {groupId} = useParams();
+
     // Formating deadline
     const deadline = event.deadline;
     const date = new Date(deadline);
@@ -36,9 +41,16 @@ function EventCard({ event }) {
                         <progress value={porcentage} max={100}></progress>
                         <span>{porcentage}%</span>
                     </div>
-                    <div>
-                        <p>{event.participants.length}</p>
-                        <img src={PersonImage} alt="image person" />
+                    <div className="event-card-bottom-right">
+                        {event.savings != undefined &&
+                            <div>
+                                <Link to={`/group/${groupId}/groupHome/savings`} className="event-card-savings-link"><img src={GraphImage} alt="image person" /></Link>
+                            </div>
+                        }
+                        <div>
+                            <p>{event.participants.length}</p>
+                            <img src={PersonImage} alt="image person" />
+                        </div>
                     </div>
                 </div>
             </div>
