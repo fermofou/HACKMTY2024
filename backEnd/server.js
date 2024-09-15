@@ -89,7 +89,7 @@ app.post("/event", async (req, res) => {
       percentage: participant.percentage,
     })),
     card_number,
-    balance: 0
+    balance: 0,
   });
 
   try {
@@ -106,41 +106,41 @@ app.post("/event", async (req, res) => {
 });
 
 app.post("/savings", async (req, res) => {
-    // crear tarjeta
-    const card_number = generateCardNumber();
-  
-    // Crear evento
-    const event = new Event({
-      account_id: data.objectCreated._id,
-      name: req.body.name,
-      goal: parseFloat(req.body.goal),
-      deadline: deadline,
-      participants: req.body.participants.map((participant) => ({
-        account_id: participant.account_id,
-        first_name: participant.first_name,
-        last_name: participant.last_name,
-        contribution: parseFloat(0),
-        percentage: participant.percentage,
-      })),
-      savings: {
-        months,
-        montlyPayment,
-      },
-      card_number,
-      balance: 0
-    });
-  
-    try {
-      await event.save();
-    } catch (err) {
-      return res.status(500).json({
-        message: "Something went wrong, try again later.",
-      });
-    }
-    res.status(200).json({
-      message: "Event created successfuly",
-    });
+  // crear tarjeta
+  const card_number = generateCardNumber();
+
+  // Crear evento
+  const event = new Event({
+    account_id: data.objectCreated._id,
+    name: req.body.name,
+    goal: parseFloat(req.body.goal),
+    deadline: deadline,
+    participants: req.body.participants.map((participant) => ({
+      account_id: participant.account_id,
+      first_name: participant.first_name,
+      last_name: participant.last_name,
+      contribution: parseFloat(0),
+      percentage: participant.percentage,
+    })),
+    savings: {
+      months,
+      montlyPayment,
+    },
+    card_number,
+    balance: 0,
   });
+
+  try {
+    await event.save();
+  } catch (err) {
+    return res.status(500).json({
+      message: "Something went wrong, try again later.",
+    });
+  }
+  res.status(200).json({
+    message: "Event created successfuly",
+  });
+});
 
 /*/ para llamar:
 a pagar:
@@ -175,7 +175,6 @@ body de /transfer:
 
 /*/
 app.post("/transfer", async (req, res) => {
-
   const userIdAcc = req.body.userIdAcc;
   const event_id = req.body.event_id;
   const amount = req.body.amount;
@@ -195,15 +194,14 @@ app.post("/transfer", async (req, res) => {
     person.save();
     event.save();
     logToChat(
-        event._id,
-        `${participant.first_name} deposited $${Intl.NumberFormat().format(
-            data.amount
-        )}.`
+      event._id,
+      `${participant.first_name} deposited $${Intl.NumberFormat().format(
+        data.amount
+      )}.`
     );
   } else {
     res.status(401).send("Not enough funds");
   }
-
 });
 
 const getAuthorName = (event, author_id) => {
@@ -441,34 +439,6 @@ app.get("/card/:event_id", async (req, res) => {
 });
 
 // todos los clientes
-app.get("/clients", async (req, res) => {
-  try {
-    const response = await fetch(
-      `http://api.nessieisreal.com/customers?key=${process.env.CAPITAL_ONE_API_KEY}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const clients = await response.json();
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${clients.status}`);
-    }
-    // Filter the clients array to exclude the customer with id equal to VIRTUAL_USER
-    const filteredClients = clients.filter(
-      (client) => client._id !== process.env.VIRTUAL_USER
-    );
-
-    res.status(200).json(filteredClients);
-  } catch (error) {
-    console.error("Error during fetch operation:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
 
 app.get("/clients", async (req, res) => {
   try {
