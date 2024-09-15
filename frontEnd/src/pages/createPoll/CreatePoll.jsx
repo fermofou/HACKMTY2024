@@ -43,7 +43,7 @@ function CreatePoll() {
     setOptions(newOptions);
   }
 
-  const userId = "1";
+  const userId = localStorage.getItem('selectedUserId');
 
   const sendPoll = async () => {
     await fetch(`${url}poll`, {

@@ -31,7 +31,7 @@ function GroupChat() {
     chatbox.current?.lastElementChild?.scrollIntoView();
   }, [chat?.length]);
 
-  const userId = "4";
+  const userId = localStorage.getItem('selectedUserId');
 
   const handleMessageChange = (e) => {
     setMessage(e.target.value);

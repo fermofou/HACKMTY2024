@@ -11,6 +11,7 @@ import "./GroupHome.css";
 function GroupHome() {
     const { groupId } = useParams();
     const [eventDetail, setEventDetail] = useState(null);
+    const userId = localStorage.getItem('selectedUserId');
 
     useEffect(() => {
         async function fetchEventDetails() {
@@ -32,7 +33,7 @@ function GroupHome() {
             {eventDetail ? 
                 <div className='group-home-container'>
                     <EventCard event={eventDetail}></EventCard>
-                    <ContributionCard event={eventDetail} event_id={groupId} account_id={eventDetail.account_id}/>
+                    <ContributionCard event={eventDetail} event_id={groupId} account_id={userId}/>
                     <div className='group-home-participant-container'>
                     {eventDetail.participants.map((participant, index) => (
                         <ParticipantCard key={index} participant={participant} goal={eventDetail.goal}/>
