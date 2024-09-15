@@ -1,7 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const PeopleSelector = ({ selectedPeople, setSelectedPeople }) => {
-  const people = ["Gabriel Galván", "Julen", "Another Person"]; // Example list of people
+  const [people, setPeople] = useState([]);
+
+  useEffect(() => {
+    const fetchPeople = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/clients");
+        const data = await response.json();
+        const names = data.map(
+          (user) => `${user.first_name} ${user.last_name}`
+        );
+        setPeople(names);
+      } catch (error) {
+        console.error("Error fetching people:", error);
+      }
+    };
+
+    fetchPeople();
+  }, []);
 
   const togglePerson = (person) => {
     setSelectedPeople((prev) =>
