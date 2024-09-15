@@ -9,6 +9,11 @@ function EventCard({ event }) {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     const formattedDate = date.toLocaleDateString('en-US', options);
 
+    const porcentage = Math.round(event.balance * 100 / event.goal, 0);
+
+    console.log(porcentage);
+
+    console.log(event);
     return (
         <>
             <div className="event-card-container">
@@ -21,12 +26,12 @@ function EventCard({ event }) {
                     </p>
                 </div>
                 <div className="event-card-middle">
-                    <h2>${event.goal}</h2>
+                    <h2>${event.goal}/<span>{event.balance}</span></h2>
                 </div>
                 <div className="event-card-bottom">
                     <div className="progress-container">
-                        <progress value={event.percentage} max={100}></progress>
-                        <span>{event.percentage}%</span>
+                        <progress value={porcentage} max={100}></progress>
+                        <span>{porcentage}%</span>
                     </div>
                     <div>
                         <p>{event.participantCount}</p>
