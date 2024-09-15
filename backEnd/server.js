@@ -217,11 +217,11 @@ const getAuthorName = (event, author_id) => {
 };
 
 const getParticipant = (event, participant_id) => {
-    for (const participant of event.participants) {
-        if (participant.account_id == participant_id) {
-            return participant;
-        }
+  for (const participant of event.participants) {
+    if (participant.account_id == participant_id) {
+      return participant;
     }
+  }
 };
 
 // mandar chat

@@ -14,18 +14,11 @@ const PeopleSelector = ({ selectedPeople, setSelectedPeople }) => {
 
         const peopleWithAccounts = await Promise.all(
           data.map(async (user) => {
-            const accountResponse = await fetch(
-              `${API_BASE}/firstAcc/${user._id}`
-            );
-            const accountData = await accountResponse.json();
-            console.log(`User: ${user._id}, Account Data:`, accountData);
-
             return {
               _id: user._id,
               name: `${user.first_name} ${user.last_name}`,
               first_name: user.first_name,
               last_name: user.last_name,
-              account_id: accountData._id || null, // Adjust based on actual response structure
             };
           })
         );
@@ -66,7 +59,7 @@ const PeopleSelector = ({ selectedPeople, setSelectedPeople }) => {
             <span className="name">{person.name}</span>
             <span className="checkmark">✔</span>
           </label>
-          {person.account_id && <span>Account ID: {person.account_id}</span>}
+          {person.account_id && <span>Account ID: {person._id}</span>}
         </div>
       ))}
     </div>
