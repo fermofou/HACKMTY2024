@@ -1,22 +1,22 @@
 .group-home-container {
-    padding-top: 1rem;
-    height: calc(100vh - 10rem);
-    overflow: auto;
+  padding-top: 1rem;
+  height: calc(100vh - 10rem);
+  overflow: auto;
 }
 
 .group-home-participant-container {
-    background-color: white;
-    margin: 0 1rem;
-    border-radius: 10px;
-    height: 17.5rem;
-    overflow-y: auto; /* Enable vertical scrolling when content exceeds the height */
-    padding: 1rem;
+  background-color: white;
+  margin: 0 1rem;
+  border-radius: 10px;
+  height: 45%;
+  overflow-y: auto; /* Enable vertical scrolling when content exceeds the height */
+  padding: 1rem;
 }
 
 .group-home-participant-container h1 {
-    color: #919191;
-    margin: 0;
-    font-size: 20px;
-    font-weight: 600;
-    /* position: fixed; */
+  color: #919191;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  /* position: fixed; */
 }
