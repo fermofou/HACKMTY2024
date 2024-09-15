@@ -2,8 +2,8 @@
 
 .groupchat-container {
   background: #f0f0f0;
-  /* height: calc(100vh - 156px); */
-  height: 90%;
+  height: calc(100vh - 180px);
+
   display: flex;
   flex-direction: column;
   box-shadow: var(--box-shadow-default);
