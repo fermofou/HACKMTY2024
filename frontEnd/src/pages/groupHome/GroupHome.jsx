@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { url }from '../../assets/constants/constants'
+import ContributionCard from "../../components/groupHome/ContributionCard";
+import EventCard from "../../components/groupHome/GroupHomeEventCard.jsx";
+import { url } from '../../assets/constants/constants';
+
+import "./GroupHome.css";
 
 function GroupHome() {
     const { groupId } = useParams();
@@ -25,8 +29,8 @@ function GroupHome() {
 
     return (
         <>
-            <div>
-                group home {groupId}
+            <div className='group-home-container'>
+                <EventCard event={eventDetail}></EventCard>
                 <ContributionCard/>
             </div>
         </>
