@@ -10,10 +10,8 @@ import Person from "./schemas/PersonSchema.js";
 dotenv.config();
 const app = express();
 
-const API_BASE = "http://api.nessieisreal.com";
-
 var corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "*",
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
