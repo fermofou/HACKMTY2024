@@ -440,36 +440,23 @@ app.post("/answer_poll", async (req, res) => {
   poll.options[option].count++;
   poll.voted.push({user: account_id, option});
 
-  if (poll.voted.length == event.participants.length) {
-    let maxVotes = 0;
-    let winningOption = -1;
-    let winningOptionCount = 0;
-    for (let i = 0; i < poll.options.length; i++) {
-      if (poll.options[i].count > maxVotes) {
-        maxVotes = poll.options[i].count;
-        winningOption = i;
-        winningOptionCount = 1;
-      } else if (poll.options[i].count == maxVotes) {
-        winningOptionCount++;
-      }
-    }
+  const winner = getPollWinner(poll, event);
 
-    if (winningOptionCount == 1) {
-      const change = poll.options[winningOption].cost;
-      let changeMessage = "Goal stays the same.";
-      if (change > 0) {
-        changeMessage = `Goal increased to $${event.goal + change}.`;
-      } else if (change < 0) {
-        changeMessage = `Goal decreased to $${event.goal + change}.`;
-      }
-      event.goal += change;
-      logToChat(
-        event_id,
-        `Poll '${poll.title}' finished, option '${poll.options[winningOption].name}' won. ${changeMessage}`
-      );
-    } else {
-      logToChat(event_id, `Poll '${poll.title}' tied. No option was chosen.`);
+  if (winner == -1) {
+    logToChat(event_id, `Poll '${poll.title}' tied. No option was chosen.`);
+  } else if (winner >= 0) {
+    const change = poll.options[winner].cost;
+    let changeMessage = "Goal stays the same.";
+    if (change > 0) {
+      changeMessage = `Goal increased to $${event.goal + change}.`;
+    } else if (change < 0) {
+      changeMessage = `Goal decreased to $${event.goal + change}.`;
     }
+    event.goal += change;
+    logToChat(
+      event_id,
+      `Poll '${poll.title}' finished, option '${poll.options[winner].name}' won. ${changeMessage}`
+    );
   }
 
   await event.save();
@@ -477,11 +464,49 @@ app.post("/answer_poll", async (req, res) => {
   res.sendStatus(200);
 });
 
+const getPollWinner = (poll, event) => {
+
+    if (poll.voted.length == event.participants.length) {
+        let maxVotes = 0;
+        let winningOption = -1;
+        let winningOptionCount = 0;
+        for (let i = 0; i < poll.options.length; i++) {
+        if (poll.options[i].count > maxVotes) {
+            maxVotes = poll.options[i].count;
+            winningOption = i;
+            winningOptionCount = 1;
+        } else if (poll.options[i].count == maxVotes) {
+            winningOptionCount++;
+        }
+        }
+
+        if (winningOptionCount == 1) {
+        return winningOption;
+        } else {
+        return -1;
+        }
+    } else {
+        return -2;
+    }
+}
+
 // checar todos los mensajes
 app.get("/chat/:event_id", async (req, res) => {
   const event_id = req.params.event_id;
 
   const event = await Event.findById(event_id).exec();
+
+  event.chat = event.chat.map(msg => {
+      if (msg.type === "poll") {
+        msg.content.poll.done = false;
+        const winner = getPollWinner(msg.content.poll);
+        if (winner > -2) {
+            msg.content.poll.done = true;
+            msg.content.poll.winner = winner;
+        }
+    }
+    return msg;
+  });
 
   res.status(200).json(event.chat);
 });
