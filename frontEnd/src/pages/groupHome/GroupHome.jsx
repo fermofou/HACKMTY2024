@@ -3,14 +3,13 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import ContributionCard from "../../components/groupHome/ContributionCard";
 import EventCard from "../../components/groupHome/GroupHomeEventCard.jsx";
-import ParticipantCard from "../../components/ParticipantCard.jsx";
+import ParticipantCard from "../../components/groupHome/ParticipantCard";
 import { url } from '../../assets/constants/constants';
 
 import "./GroupHome.css";
 
 function GroupHome() {
     const { groupId } = useParams();
-
     const [eventDetail, setEventDetail] = useState([]);
 
     useEffect(() => {
@@ -30,15 +29,18 @@ function GroupHome() {
 
     return (
         <>
-            <div className='group-home-container'>
-                <EventCard event={eventDetail}></EventCard>
-                <ContributionCard/>
-                <div>
-                    {eventDetail.participants.map((participant) => {
-                        <ParticipantCard />
-                    })}
+            {eventDetail ? 
+                <div className='group-home-container'>
+                    <EventCard event={eventDetail}></EventCard>
+                    <ContributionCard/>
+                    <div>
+                        {/* {eventDetail.participants.map((participant) => {
+                            <ParticipantCard />
+                        })} */}
+                    </div>
                 </div>
-            </div>
+                
+            : <p>loading</p>}
         </>
     )
 }
