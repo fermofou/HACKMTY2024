@@ -12,17 +12,19 @@
   flex-direction: column;
   gap: 14px;
   flex: 1;
+  overflow: auto;
 }
 
 .groupchat-newmessage {
   flex: 80px;
   flex-grow: 0;
-  background: red;
+  padding: 10px;
+  /* background: red; */
 }
 
 .groupchat-log {
   width: 100%;
-  padding: 10px 0;
+  padding: 5px 0;
   text-align: center;
   background: #014A77;
   border-radius: 5px;
@@ -63,5 +65,93 @@
 }
 
 .groupchat-poll-options {
-  
+  display: flex;
+  flex-direction: column;
+  padding: 0 5px;
+  margin-top: 5px;
+}
+
+.groupchat-poll-option-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.groupchat-poll-option-left button {
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  position: relative;
+  margin-left: 15px;
+}
+
+.groupchat-poll-option-left button::before {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  content: '';
+  background: transparent;
+  border: 2px solid white;
+  border-radius: 50%;
+  left: -14px;
+  top: 3px;
+}
+
+.groupchat-poll-option-selected .groupchat-poll-option-left button::before {
+  background: white;
+}
+
+p.groupchat-poll-cost {
+  font-weight: 100;
+  margin: 0;
+  font-size: .9rem;
+}
+
+.groupchat-poll-option {
+  display: flex;
+  justify-content: space-between;
+}
+
+.groupchat-createpoll-button {
+  background: none;
+  outline: none;
+  border: none;
+  font-size: 1rem;
+  color: #014A77;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+}
+
+.groupchat-inputbar {
+  width: 100%;
+  display: flex;
+  position: relative;
+  height: 50px;
+}
+
+.groupchat-inputbar input {
+  width: 100%;
+  color: black;
+  background: #d9d9d9;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 0 50px 0 15px;
+  font-size: 1rem;
+  height: 100%;
+  outline: none;
+}
+
+.groupchat-inputbar input:focus {
+  border: 2px solid #014A77;
+}
+
+.groupchat-inputbar button {
+  position: absolute;
+  right: 5px;
+  background: none;
+  border: none;
+  z-index: 1000;
+  top: 8px;
 }
