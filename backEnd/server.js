@@ -11,8 +11,13 @@ const app = express();
 
 const API_BASE = "http://api.nessieisreal.com";
 
+var corsOptions = {
+    origin: 'http://localhost:5173',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}  
+
 app.use(json());
-app.use(cors());
+app.use(cors(corsOptions));
 
 // Example defining a route in Express
 app.get("/", (req, res) => {
@@ -210,7 +215,7 @@ app.post("/transfer", async (req, res) => {
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           medium: "balance",
@@ -239,7 +244,7 @@ app.post("/transfer", async (req, res) => {
     setTimeout(async () => {
       try {
         // Await the async function checkTransfer
-        const transferStatusMessage = await checkTransfer(transferId);
+        const transferStatusMessage = await checkTransfer(transferId, event);
         console.log(`Transfer ID ${transferId}: ${transferStatusMessage}`);
       } catch (error) {
         console.error(
@@ -260,7 +265,7 @@ app.post("/transfer", async (req, res) => {
   }
 });
 
-const checkTransfer = async (transferId) => {
+const checkTransfer = async (transferId, event) => {
   console.log(
     "1 min has passed. Checking transfer status for transfer ID:",
     transferId
@@ -286,13 +291,16 @@ const checkTransfer = async (transferId) => {
 
     if (status === "executed") {
       console.log("Transfer created successfully");
+      const participant = getParticipant(event, data.payer_id);
+      participant.contribution += data.amount;
+      await event.save();
       return "succesful";
     } else if (status === "cancelled") {
       console.log("Transaction unsuccessful");
       return "unsuccessful";
     } else {
       console.log("Transaction pending");
-      return checkTransfer(transferId);
+      return checkTransfer(transferId, event);
     }
   } catch (error) {
     console.error("Error during fetch operation:", error);
@@ -368,6 +376,14 @@ const getAuthorName = (event, author_id) => {
   }
   return author;
 };
+
+const getParticipant = (event, participant_id) => {
+    for (const participant of event.participants) {
+      if (participant.account_id == participant_id) {
+         return participant;
+      }
+    }
+  };
 
 // mandar chat
 app.post("/chat", async (req, res) => {

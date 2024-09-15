@@ -57,3 +57,10 @@
     cursor: pointer;
   }
   
+  .deposit-summary {
+    color: black;
+    font-size: 1.3rem;
+    margin: 0;
+    font-weight: bold;
+    color: #004085;
+  }

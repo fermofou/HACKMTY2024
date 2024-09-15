@@ -26,11 +26,14 @@ const ContributionCard = ({event, event_id, account_id}) => {
 
   const handleDepositClick = async () => {
     try {
-      const response = await axios.post(url + `transfer`, {
+
+      const requestBody = {
         event_id: event_id,
         userIdAcc: userId,
-        amount: deposit
-      });
+        amount: Number(deposit)
+      };
+
+      const response = await axios.post(url + `transfer`, requestBody);
 
       response;
 
@@ -54,14 +57,17 @@ const ContributionCard = ({event, event_id, account_id}) => {
         ${formattedCurrent} <span className="goal-amount">/ {formattedGoal}</span>
       </p>
       <div className="deposit-section">
-        <input
-          type="number"
-          placeholder= {`$ ${formatredPlaceHolder}`}
-          value={deposit}
-          onChange={handleDepositChange}
-          className="deposit-input"
-        />
-        <button onClick={handleDepositClick} className="deposit-button">Deposit</button>
+        {placeHolder > 0 && <>
+          <input
+            type="number"
+            placeholder= {`$ ${formatredPlaceHolder}`}
+            value={deposit}
+            onChange={handleDepositChange}
+            className="deposit-input"
+          />
+          <button onClick={handleDepositClick} className="deposit-button">Deposit</button>
+        </>}
+        {placeHolder <= 0 && <p className="deposit-summary">You're all done!</p>}
       </div>
     </div>
   );
