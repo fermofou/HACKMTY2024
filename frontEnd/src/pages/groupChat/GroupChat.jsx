@@ -57,6 +57,21 @@ function GroupChat() {
         setMessage("");
     }
 
+    const voteOnPoll = async (poll_index, option) => {
+        await fetch(`${url}answer_poll`, {
+            method: "POST",
+            headers: {
+                'Content-Type': "application/json"
+            },
+            body: JSON.stringify({
+                event_id: groupId,
+                account_id: userId,
+                poll_index,
+                option
+            })
+        });
+    }
+
     const handleKeyDown = (e) => {
         if(e.code === "Enter") sendMessage();
     }
@@ -107,7 +122,7 @@ function GroupChat() {
                                                             return (
                                                                 <div key={j} className={`groupchat-poll-option ${selected == j ? 'groupchat-poll-option-selected' : ''} ${msg.content.poll.winner == j ? 'groupchat-poll-option-winner': ''}`}>
                                                                     <div className="groupchat-poll-option-left">
-                                                                        <button>{option.name}</button>
+                                                                        <button onClick={() => voteOnPoll(i, j)}>{option.name}</button>
                                                                         {option.cost > 0 && <p className="groupchat-poll-cost">+ $ {Intl.NumberFormat().format(option.cost)}</p>}
                                                                         {option.cost < 0 && <p className="groupchat-poll-cost">- $ {Intl.NumberFormat().format(Math.abs(option.cost))}</p>}
                                                                     </div>
