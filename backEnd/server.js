@@ -485,9 +485,12 @@ app.get("/chat/:event_id", async (req, res) => {
 app.get("/event/:event_id", async (req, res) => {
   const event_id = req.params.event_id;
 
+  
   const event = await Event.findById(event_id).exec();
+  const type = event.savings == undefined ? "event" : "savings";
 
   event.balance = await getAccountBalance(event.account_id);
+  event.type = type;
 
   res.status(200).json(event);
 });
