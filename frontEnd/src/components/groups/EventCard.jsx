@@ -1,33 +1,31 @@
+import PersonImage from "../../assets/personImage.png";
+import EventImg from "../../assets/eventImg.png";
+import SavingsImg from "../../assets/savingsImg.png";
+
+
 import "./EventCard.css";
 
 function EventCard({ number, event }) {
 
     const colors = ["#2078AE", "#1B5D81", "#003554", "#014A77", "#308DC6", "#2078AE"];
     const backgroundColor = colors[number];
-
-//     ​
-// balance: 0
-// ​​
-// deadline: "2024-11-14T13:35:47.000Z"
-// ​​
-// name: "Trip to France"
-// ​​
-// participantCount: 2
-// ​​
-// percentage: 0
 // ​​
 // type: "savings"
 
+    // Formating deadline
     const deadline = event.deadline;
-
-    // Convertir la fecha ISO a un objeto Date
     const date = new Date(deadline);
-
-    // Opciones de formato para mostrar solo la fecha sin la hora
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-
-    // Formatear la fecha
     const formattedDate = date.toLocaleDateString('en-US', options);
+
+    let typeImg;
+
+    if (event.type === "savings") {
+        typeImg = SavingsImg;
+
+    } else {
+        typeImg = EventImg;
+    }
 
     return (
         <>
@@ -41,16 +39,17 @@ function EventCard({ number, event }) {
                     </p>
                 </div>
                 <div className="event-card-middle">
-                    <h2>${event.balance}</h2>
+                    <h2>${event.goal}</h2>
+                    <img src={typeImg} alt="type image" />
                 </div>
                 <div className="event-card-bottom">
-                    <div style={{display: "flex"}}>
-                        <p>**********</p> 
-                        <p>87%</p>
+                    <div className="progress-container">
+                        <progress value={event.percentage} max={100}></progress>
+                        <span>{event.percentage}%</span>
                     </div>
-                    <div style={{display: "flex"}}>
+                    <div>
                         <p>{event.participantCount}</p>
-                        <p>&</p>
+                        <img src={PersonImage} alt="image person" />
                     </div>
                 </div>
             </div>

@@ -6,11 +6,18 @@
     p, h2 {
         margin: 0;
         padding: 0;
-        color: var(--text-color-white)
+        color: var(--text-color-white);
+        width: fit-content;
     }
 }
 
 .event-card-top {
+    div {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -18,6 +25,15 @@
 }
 
 .event-card-middle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    img {
+        height: 2.2rem;
+        width: 2.3rem;
+    }
+
     h2 {
         font: Inter;
         font-weight: 300;
@@ -29,4 +45,51 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
+    div {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    img {
+        height: 1rem;
+        width: 1rem;
+        margin-left: 0.3rem;
+    }
 }
+
+.progress-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between the progress bar and the percentage text */
+  }
+  
+  .progress-container progress {
+    height: 10px; /* Make the progress bar taller */
+    border-radius: 10px; /* Rounded corners */
+    background-color: transparent; /* Transparent background */
+    border: 1px solid white; /* White border */
+    appearance: none; /* Remove default browser styles */
+  }
+  
+  .progress-container span {
+    color: white; /* White text for the percentage */
+    font-size: 16px; /* Adjust the font size */
+  }
+  
+  progress::-webkit-progress-bar {
+    background-color: transparent; /* Transparent background for Webkit browsers */
+    border-radius: 10px;
+  }
+  
+  progress::-webkit-progress-value {
+    background-color: white; /* White fill */
+    border-radius: 10px; /* Smooth rounded corners on the fill */
+  }
+  
+  progress::-moz-progress-bar {
+    background-color: white; /* White fill for Firefox */
+    border-radius: 10px; /* Smooth rounded corners on the fill */
+  }
+  
