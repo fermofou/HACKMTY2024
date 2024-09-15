@@ -150,7 +150,7 @@ function GroupChat() {
                         </div>
                     </div>
                 </>
-                : <></>}
+                : <div className="groupchat-centered"><div className="spinningCircle"></div></div>}
             </div>
         </>
     )
