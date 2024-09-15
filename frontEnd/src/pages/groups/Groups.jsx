@@ -27,6 +27,8 @@ function Groups() {
 
     }, []);
 
+    console.log(events)
+
     return (
         <>
             <div className='groups-container'>
@@ -42,8 +44,8 @@ function Groups() {
                 </div>
                 <div className='events-container'>
                         {events.map((event, index) => (
-                            <li key={`${event.groupId}-${index}`}>
-                                <Link to={`/group/${event.groupId}`}>
+                            <li key={`${event.event_id}-${index}`}>
+                                <Link to={`/group/${event.event_id}`}>
                                     <EventCard number={(index % 5) + 1} event={event} />
                                 </Link>
                             </li>
