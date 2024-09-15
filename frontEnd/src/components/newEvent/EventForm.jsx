@@ -3,6 +3,8 @@ import PeopleSelector from "./PeopleSelector";
 import eventImg from "../../assets/eventImg.png";
 import savingsImg from "../../assets/savingsImg.png";
 import { Link, useNavigate } from "react-router-dom";
+import { url } from "../../assets/constants/constants";
+import axios from "axios";
 
 const EventForm = () => {
   const [eventName, setEventName] = useState("");
@@ -49,7 +51,7 @@ const EventForm = () => {
 
     if (eventType === "savings") {
       try {
-        const response = await fetch("http://localhost:3000/savings", {
+        const response = await fetch(`${url}savings`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -72,7 +74,7 @@ const EventForm = () => {
       }
     } else {
       try {
-        const response = await fetch("http://localhost:3000/event", {
+        const response = await fetch(`${url}event`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
