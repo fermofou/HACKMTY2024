@@ -8,6 +8,9 @@ import PlusImg from '../../assets/createNewEventPlusImg.png'
 import "./Groups.css"
 
 function Groups() {
+
+    const userId = localStorage.getItem('selectedUserId');
+
     const url = "http://localhost:3000/"
 
     const [events, setEvents] = useState([]);
@@ -15,7 +18,7 @@ function Groups() {
     useEffect(() => {
         async function fecthEvents() {
             try {
-                const response = await axios.get(url + `events_savings?account_id=1`);
+                const response = await axios.get(url + `events_savings?account_id=${userId}`);
                 setEvents(await response.data)
 
             } catch (error) {
