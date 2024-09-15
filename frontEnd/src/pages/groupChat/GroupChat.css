@@ -1,10 +1,23 @@
 .groupchat-container {
   background: #F0F0F0;
   height: calc(100vh - 200px);
+  display: flex;
+  flex-direction:column;
+  box-shadow: var(--box-shadow-default);
+}
+
+.groupchat-messages {
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 14px;
+  flex: 1;
+}
+
+.groupchat-newmessage {
+  flex: 80px;
+  flex-grow: 0;
+  background: red;
 }
 
 .groupchat-log {
@@ -20,7 +33,7 @@
   font-weight: 400;
 }
 
-.groupchat-othermessage {
+.groupchat-other {
   background: #066BA7;
   max-width: 282px;
   width: fit-content;
@@ -28,8 +41,9 @@
   padding: 10px;
 }
 
-.groupchat-ownmessage {
-  background: #066BA7;
+.groupchat-own {
+  margin-left: auto;
+  background: #919191;
   max-width: 282px;
   width: fit-content;
   border-radius: 5px;
@@ -40,4 +54,14 @@
   font-weight: 200;
   font-size: 12px;
   margin: 0;
+}
+
+.groupchat-poll h1 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.groupchat-poll-options {
+  
 }

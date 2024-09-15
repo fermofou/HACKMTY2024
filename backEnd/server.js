@@ -83,6 +83,7 @@ app.get("/events_savings", async (req, res) => {
       const type = event.savings == undefined ? "event" : "savings";
       return {
         balance: amount,
+        goal: event.goal,
         type,
         deadline: event.deadline,
         name: event.name,
