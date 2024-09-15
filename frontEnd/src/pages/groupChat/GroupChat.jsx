@@ -50,6 +50,13 @@ function GroupChat() {
                                     let authorType = "other";
                                     let author = msg.content.author;
                                     if (msg.content.author_id === userId) { authorType = "own"; author = "You" }
+                                    let selected = -1;
+                                    for (let vote of msg.content.poll.voted) {
+                                        if (vote.user === userId) {
+                                            selected = vote.option;
+                                            break;
+                                        }
+                                    }
                                     return (
                                         <div key={i} className={`groupchat-${authorType}`}>
                                             <h6>{author}</h6>
@@ -58,7 +65,16 @@ function GroupChat() {
                                                 <div className="groupchat-poll-options">
                                                     {
                                                         msg.content.poll.options.map((option, j) => {
-                                                            
+                                                            return (
+                                                                <div key={j} className={`groupchat-poll-option ${selected == j ? 'groupchat-poll-option-selected' : ''}`}>
+                                                                    <div className="groupchat-poll-option-left">
+                                                                        <button>{option.name}</button>
+                                                                        {option.cost > 0 && <p className="groupchat-poll-cost">+ $ {option.cost}</p>}
+                                                                        {option.cost < 0 && <p className="groupchat-poll-cost">- $ {Math.abs(option.cost)}</p>}
+                                                                    </div>
+                                                                    <p>{option.count}</p>
+                                                                </div>
+                                                            );
                                                         })
                                                     }
                                                 </div>
@@ -68,38 +84,6 @@ function GroupChat() {
                                 }
                             })
                         }
-                        <div className="groupchat-log">
-                            <p>Skipper deposited $ 3,000</p>
-                        </div>
-                        <div className="groupchat-other">
-                            <h6>Cabo</h6>
-                            <p>What do you guys think if we go in first class?</p>
-                        </div>
-                        <div className="groupchat-own">
-                            <h6>You</h6>
-                            <p>That is a stupid idea Cabo 🤬</p>
-                        </div>
-                        <div className="groupchat-other">
-                            <h6>Kowalski</h6>
-                            <div className="groupchat-poll">
-                                <h1>Poll: Should we buy first class tickets?</h1>
-                                <div className="groupchat-poll-options">
-                                    <div className="groupchat-poll-option">
-                                        <div className="groupchat-poll-option-left">
-                                            <button>Yes</button>
-                                            <p className="groupchat-poll-cost">+ $ 54,000</p>
-                                        </div>
-                                        <p>2</p>
-                                    </div>
-                                    <div className="groupchat-poll-option groupchat-poll-option-selected">
-                                        <div className="groupchat-poll-option-left">
-                                            <button>No</button>
-                                        </div>
-                                        <p>3</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div className="groupchat-newmessage">
                         <button className="groupchat-createpoll-button">

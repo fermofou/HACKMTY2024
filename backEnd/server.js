@@ -426,12 +426,19 @@ app.post("/answer_poll", async (req, res) => {
   }
 
   const poll = message.content.poll;
-  if (poll.voted.includes(account_id)) {
+  let already_voted = false;
+  for (let vote in poll.voted) {
+    if (vote.user == account_id) {
+        already_voted = true;
+        break;
+    }
+  }
+  if (already_voted) {
     return res.status(401).send("Already voted");
   }
 
   poll.options[option].count++;
-  poll.voted.push(account_id);
+  poll.voted.push({user: account_id, option});
 
   if (poll.voted.length == event.participants.length) {
     let maxVotes = 0;
@@ -485,12 +492,9 @@ app.get("/chat/:event_id", async (req, res) => {
 app.get("/event/:event_id", async (req, res) => {
   const event_id = req.params.event_id;
 
-  
-  const event = await Event.findById(event_id).exec();
-  const type = event.savings == undefined ? "event" : "savings";
+  let event = await Event.findById(event_id).exec();
 
   event.balance = await getAccountBalance(event.account_id);
-  event.type = type;
 
   res.status(200).json(event);
 });

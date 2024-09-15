@@ -68,7 +68,7 @@ Content-Type: application/json
 
 {
   "event_id": "66e60dc24645973fb256c706",
-  "account_id": "2",
+  "account_id": "1",
   "poll_index": 4,
   "option": 0
 }
@@ -78,3 +78,6 @@ GET http://127.0.0.1:3000/chat/66e60dc24645973fb256c706
 
 ###
 GET http://127.0.0.1:3000/card/66e60dc24645973fb256c706
+
+###
+GET http://127.0.0.1:3000/event/66e60dc24645973fb256c706
