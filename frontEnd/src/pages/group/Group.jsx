@@ -8,6 +8,7 @@ import GroupCard from '../groupCard/GroupCard';
 import CardGrayIcon from '../../assets/cardGrayIcon.svg';
 import ChatGrayIcon from '../../assets/chatGrayIcon.svg';
 import HomeGrayIcon from '../../assets/homeGrayIcon.svg';
+import { url }from '../../assets/constants/constants'
 import "./Group.css";
 
 function Group() {
@@ -19,7 +20,7 @@ function Group() {
     useEffect(() => {
         async function fetchEventDetails() {
             try {
-                const response = await axios.get("http://localhost:3000/" + `event/${groupId}`);
+                const response = await axios.get(url + `event/${groupId}`);
                 setEventDetail(response.data);
             } catch (error) {
                 console.log("Error fetching event" + error);
