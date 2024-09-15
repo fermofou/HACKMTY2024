@@ -12,9 +12,9 @@ const app = express();
 const API_BASE = "http://api.nessieisreal.com";
 
 var corsOptions = {
-    origin: 'http://localhost:5173',
-    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-}  
+  origin: "http://localhost:5173",
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
 
 app.use(json());
 app.use(cors(corsOptions));
@@ -215,7 +215,7 @@ app.post("/transfer", async (req, res) => {
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           medium: "balance",
@@ -290,10 +290,15 @@ const checkTransfer = async (transferId, event) => {
     const status = data.status;
 
     if (status === "executed") {
-      console.log("Transfer created successfully");
       const participant = getParticipant(event, data.payer_id);
       participant.contribution += data.amount;
       await event.save();
+      logToChat(
+        event._id,
+        `${participant.first_name} deposited $${Intl.NumberFormat().format(
+          event.goal + change
+        )}.`
+      );
       return "succesful";
     } else if (status === "cancelled") {
       console.log("Transaction unsuccessful");
@@ -378,12 +383,12 @@ const getAuthorName = (event, author_id) => {
 };
 
 const getParticipant = (event, participant_id) => {
-    for (const participant of event.participants) {
-      if (participant.account_id == participant_id) {
-         return participant;
-      }
+  for (const participant of event.participants) {
+    if (participant.account_id == participant_id) {
+      return participant;
     }
-  };
+  }
+};
 
 // mandar chat
 app.post("/chat", async (req, res) => {

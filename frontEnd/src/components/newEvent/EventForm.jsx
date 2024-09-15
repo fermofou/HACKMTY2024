@@ -52,8 +52,8 @@ const EventForm = () => {
           },
           body: JSON.stringify(eventData),
         });
-        console.log(JSON.stringify(eventData));
-        console.log(response);
+        // console.log(JSON.stringify(eventData));
+        // console.log(response);
         if (response.ok) {
           const data = await response.json();
           alert(data.message);
@@ -75,12 +75,12 @@ const EventForm = () => {
           },
           body: JSON.stringify(eventData),
         });
-        console.log(JSON.stringify(eventData));
-        console.log(response);
+        // console.log(JSON.stringify(eventData));
+        // console.log(response);
         if (response.ok) {
           const data = await response.json();
-          alert(data.message);
-          navigate("/success"); // Navigate to a success page or another route
+          // alert(data.message);
+          navigate("/groups"); // Navigate to a success page or another route
         } else {
           const errorData = await response.json();
           alert(errorData.message);
