@@ -296,7 +296,7 @@ const checkTransfer = async (transferId, event) => {
       logToChat(
         event._id,
         `${participant.first_name} deposited $${Intl.NumberFormat().format(
-          event.goal + change
+          data.amount
         )}.`
       );
       return "succesful";
