@@ -1,4 +1,7 @@
 import { useParams} from 'react-router-dom';
+import ContributionCard from '../../components/groups/ContributionCard'; 
+
+import "./GroupHome.css"
 
 function GroupHome() {
     const { groupId } = useParams();
@@ -8,6 +11,7 @@ function GroupHome() {
             <div>
                 group home {groupId}
             </div>
+            <ContributionCard/>
         </>
     )
 }
