@@ -68,9 +68,9 @@ Content-Type: application/json
 
 {
   "event_id": "66e60dc24645973fb256c706",
-  "account_id": "1",
+  "account_id": "2",
   "poll_index": 4,
-  "option": 0
+  "option": 1
 }
 
 ###

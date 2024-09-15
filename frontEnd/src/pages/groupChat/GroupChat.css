@@ -103,6 +103,11 @@
   background: white;
 }
 
+p.groupchat-pollover {
+  color: rgb(214, 214, 214);
+  text-align: right;
+}
+
 p.groupchat-poll-cost {
   font-weight: 100;
   margin: 0;
