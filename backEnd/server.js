@@ -220,6 +220,8 @@ app.post("/transfer", async (req, res) => {
       }
     );
 
+    console.log(response);
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -676,6 +678,44 @@ app.get("/clients", async (req, res) => {
     console.error("Error during fetch operation:", error);
     res.status(500).json({ error: error.message });
   }
+});
+
+app.get("/users", async (req, res) => {
+    try {
+        const response = await fetch(
+          `${API_BASE}/customers?key=${process.env.CAPITAL_ONE_API_KEY}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+    
+        const clients = await response.json();
+    
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${clients.status}`);
+        }
+        // Filter the clients array to exclude the customer with id equal to VIRTUAL_USER
+        const filteredClients = clients.filter(
+          (client) => client._id !== process.env.VIRTUAL_USER
+        );
+
+        const clientAccounts = await Promise.all(clients.map(async (client) => {
+            const response2 = await fetch(`${API_BASE}/customers/${client._id}/accounts?key=${process.env.CAPITAL_ONE_API_KEY}`);
+            const data2 = await response2.json();
+            return {
+                name: client.first_name + " " + client.last_name,
+                account_id: data2[0]._id
+            };
+        }));
+    
+        res.status(200).json(clientAccounts);
+      } catch (error) {
+        console.error("Error during fetch operation:", error);
+        res.status(500).json({ error: error.message });
+      }
 });
 
 app.get("/firstAcc", async (req, res) => {

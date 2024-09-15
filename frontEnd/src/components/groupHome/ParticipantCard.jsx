@@ -10,7 +10,7 @@ function ParticipantCard({participant, goal}) {
                     <p>{participant.first_name[0]}</p>
                 </div>
                 <div>
-                    <p>$ {participant.contribution} /  <span>{goal * participant.percentage / 100}</span></p>
+                    <p>$ {Intl.NumberFormat().format(participant.contribution)} /  <span>{Intl.NumberFormat().format(goal * participant.percentage)}</span></p>
                 </div>
             </div>
         </>
