@@ -8,6 +8,8 @@
   flex-direction: column;
   box-shadow: var(--box-shadow-default);
   color: white;
+  overflow: hidden; /* Prevents the container itself from overflowing */
+  flex: 1 1 auto;
 }
 
 .groupchat-messages {
