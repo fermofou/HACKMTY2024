@@ -1,5 +1,5 @@
 import React from 'react';
-import CapitalOneLogo from '../../assets/CapitalOneLogo.png'
+import CapitalOneLogo from '../../assets/CapitalOneLogo_2.png'
 import './CardComponent.css';  // Import the CSS file
 
 const CardComponent  = ({ title, cardNumber, expirationDate, cvv}) =>  {
