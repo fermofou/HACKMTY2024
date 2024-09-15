@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import ContributionCard from "../../components/groupHome/ContributionCard";
-import GroupHomeEventCard from "../../components/groupHome/GroupHomeEventCard";
-import ParticipantCard from "../../components/groupHome/ParticipantCard";
+import ContributionCard from "../../components/groupHomeComponents/ContributionCard";
+import GroupHomeEventCard from "../../components/groupHomeComponents/GroupHomeEventCard";
+import ParticipantCard from "../../components/groupHomeComponents/ParticipantCard";
 import { url } from "../../assets/constants/constants";
 
 import "./GroupHome.css";
