@@ -43,11 +43,11 @@ function EventCard({ number, event }) {
                 </div>
                 <div className="event-card-bottom">
                     <div className="progress-container">
-                        <progress value={event.percentage} max={100}></progress>
-                        <span>{event.percentage}%</span>
+                        <progress value={event.balance * 100 / event.goal} max={100}></progress>
+                        <span>{Math.round(event.balance * 100 / event.goal, 0)}%</span>
                     </div>
                     <div>
-                        <p>{event.participantCount}</p>
+                        <p>{event.participants.length}</p>
                         <img src={PersonImage} alt="image person" />
                     </div>
                 </div>

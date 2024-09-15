@@ -37,7 +37,7 @@ function EventCard({ event }) {
                         <span>{porcentage}%</span>
                     </div>
                     <div>
-                        <p>{event.participantCount}</p>
+                        <p>{event.participants.length}</p>
                         <img src={PersonImage} alt="image person" />
                     </div>
                 </div>
