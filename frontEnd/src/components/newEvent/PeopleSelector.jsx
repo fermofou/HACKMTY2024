@@ -13,7 +13,7 @@ const PeopleSelector = ({ selectedPeople, setSelectedPeople }) => {
 
   return (
     <div>
-      <label>People</label>
+      <label className="inputLabel">People</label>
       {people.map((person) => (
         <div key={person}>
           <input

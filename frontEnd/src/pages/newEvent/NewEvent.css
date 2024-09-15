@@ -168,6 +168,8 @@ form input[type="date"] {
 .upperButtons button {
   background-color: transparent;
   color: #919191;
+  height: 20px;
+  font-size: 18px;
   /* Distribute space between the buttons */
 }
 .upperButtons button.selected {
