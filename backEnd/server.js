@@ -448,9 +448,9 @@ app.post("/answer_poll", async (req, res) => {
     const change = poll.options[winner].cost;
     let changeMessage = "Goal stays the same.";
     if (change > 0) {
-      changeMessage = `Goal increased to $${event.goal + change}.`;
+      changeMessage = `Goal increased to $${Intl.NumberFormat().format(event.goal + change)}.`;
     } else if (change < 0) {
-      changeMessage = `Goal decreased to $${event.goal + change}.`;
+      changeMessage = `Goal decreased to $${Intl.NumberFormat().format(event.goal + change)}.`;
     }
     event.goal += change;
     logToChat(
@@ -465,7 +465,6 @@ app.post("/answer_poll", async (req, res) => {
 });
 
 const getPollWinner = (poll, event) => {
-
     if (poll.voted.length == event.participants.length) {
         let maxVotes = 0;
         let winningOption = -1;
@@ -494,21 +493,23 @@ const getPollWinner = (poll, event) => {
 app.get("/chat/:event_id", async (req, res) => {
   const event_id = req.params.event_id;
 
-  const event = await Event.findById(event_id).exec();
-
-  event.chat = event.chat.map(msg => {
-      if (msg.type === "poll") {
-        msg.content.poll.done = false;
-        const winner = getPollWinner(msg.content.poll);
+  let event = await Event.findById(event_id).exec();
+  
+  const newChat = event.chat.map((msg) => {
+    if (msg.type === "poll") {
+        let done = false;
+        let win = -2;
+        const winner = getPollWinner(msg.content.poll, event);
         if (winner > -2) {
-            msg.content.poll.done = true;
-            msg.content.poll.winner = winner;
+            done = true;
+            win = winner;
         }
+        msg.content.poll = {...msg.content.poll, done, winner: win}
     }
     return msg;
   });
 
-  res.status(200).json(event.chat);
+  res.status(200).json(newChat);
 });
 
 // individual event

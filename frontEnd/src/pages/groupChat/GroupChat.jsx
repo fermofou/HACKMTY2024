@@ -69,8 +69,8 @@ function GroupChat() {
                                                                 <div key={j} className={`groupchat-poll-option ${selected == j ? 'groupchat-poll-option-selected' : ''}`}>
                                                                     <div className="groupchat-poll-option-left">
                                                                         <button>{option.name}</button>
-                                                                        {option.cost > 0 && <p className="groupchat-poll-cost">+ $ {option.cost}</p>}
-                                                                        {option.cost < 0 && <p className="groupchat-poll-cost">- $ {Math.abs(option.cost)}</p>}
+                                                                        {option.cost > 0 && <p className="groupchat-poll-cost">+ $ {Intl.NumberFormat().format(option.cost)}</p>}
+                                                                        {option.cost < 0 && <p className="groupchat-poll-cost">- $ {Intl.NumberFormat().format(Math.abs(option.cost))}</p>}
                                                                     </div>
                                                                     <p>{option.count}</p>
                                                                 </div>
@@ -78,6 +78,7 @@ function GroupChat() {
                                                         })
                                                     }
                                                 </div>
+                                                {msg.content.poll.done && <p className="groupchat-pollover">Poll is over{msg.content.poll.winner == -1 ? ' (Tied)' : ''}</p>}
                                             </div>
                                         </div>
                                     )
