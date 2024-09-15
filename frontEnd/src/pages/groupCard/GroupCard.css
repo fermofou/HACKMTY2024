@@ -1,0 +1,81 @@
+
+.balance-card {
+    background-color: #f8f9fa; /* Light background color for the card */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    padding: 20px;
+    text-align: left;
+    margin:16px;
+  }
+  
+  .balance-label {
+    font-size: 20px;
+    color: #6c757d; /* Grey color for the label */
+    margin: 0;
+    font-family: Albert Sans;
+    font-weight: 600;
+  }
+  
+  .balance-amount {
+    font-size: 36px;
+    color: #004085; /* Dark blue color for the amount */
+    margin: 0;
+    font-family: Inter;
+    font-weight: 200;
+  }
+
+  .add-wallet-btn {
+    margin: 16px;
+    font-size: 20px;
+    font-weight: 600;
+    font-family: Albert Sans;
+    background-color: #066BA7;
+    box-shadow: 4px 4px 10px rgba(6, 107, 167, 0.2);
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 2em;
+    border-radius: 5px;
+  }
+
+  .transactions {
+    margin: 16px;
+    background-color: #f8f9fa; /* Light background color for the card */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    padding: 20px;
+    font-family: Albert Sans;
+    color: #919191;
+  }
+
+  .transactions p {
+    font-size: 20px;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .transactions ul {
+    list-style: none;
+    padding: 0;
+  }
+
+li {
+    font-size: 15;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  .transactions li:not(:last-child) {
+    border-bottom: 1px solid #ccc; /* Add a line between all list items except the last one */
+  }
+
+  .transactions li:not(:first-child) {
+    margin-top:20px;
+
+  }
+
+  .transactions li p {
+    font-size: 15px;
+    color: #FF3A2F;
+  }
