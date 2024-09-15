@@ -1,0 +1,43 @@
+.groupchat-container {
+  background: #F0F0F0;
+  height: calc(100vh - 200px);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.groupchat-log {
+  width: 100%;
+  padding: 10px 0;
+  text-align: center;
+  background: #014A77;
+  border-radius: 5px;
+}
+
+.groupchat-container p {
+  margin: 0;
+  font-weight: 400;
+}
+
+.groupchat-othermessage {
+  background: #066BA7;
+  max-width: 282px;
+  width: fit-content;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.groupchat-ownmessage {
+  background: #066BA7;
+  max-width: 282px;
+  width: fit-content;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.groupchat-container h6 {
+  font-weight: 200;
+  font-size: 12px;
+  margin: 0;
+}

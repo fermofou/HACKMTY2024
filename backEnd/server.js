@@ -88,6 +88,7 @@ app.get("/events_savings", async (req, res) => {
         name: event.name,
         participantCount: event.participants.length,
         percentage: Math.round((amount / event.goal) * 100),
+        event_id: event._id
       };
     })
   );
