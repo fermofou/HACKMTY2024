@@ -41,7 +41,7 @@ function GroupHome() {
                     </div>
                 </div>
                 
-            : <p>loading</p>}
+            : <></>}
         </>
     )
 }
