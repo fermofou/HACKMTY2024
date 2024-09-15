@@ -28,7 +28,7 @@ const EventForm = () => {
     }
     // console.log({ eventName, eventType, goal, dueDate, selectedPeople });
     const parts = selectedPeople.map((person) => ({
-      account_id: person.account_id,
+      account_id: person._id,
       first_name: person.first_name,
       last_name: person.last_name,
       contribution: 0,

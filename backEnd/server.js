@@ -90,6 +90,7 @@ app.post("/event", async (req, res) => {
     card_number,
     balance: 0,
   });
+  console.log(event);
 
   try {
     await event.save();
