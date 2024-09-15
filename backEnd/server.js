@@ -206,7 +206,7 @@ app.post("/transfer", async (req, res) => {
     logToChat(
       event._id,
       `${participant.first_name} deposited $${Intl.NumberFormat().format(
-        data.amount
+        amount
       )}.`
     );
   } else {
