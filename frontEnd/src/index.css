@@ -2,6 +2,7 @@
   --text-color-white: #ffffff;
   --text-color-gray: #808080;
   --text-color-blue: #1d4973;
+  --box-shadow-default: 0 4px 8px rgba(0, 0, 0, 0.2);
 
   font-family: Albert Sans, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
