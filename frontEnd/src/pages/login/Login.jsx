@@ -11,7 +11,7 @@ function Login() {
     useEffect(() => {
         async function fetchUsers() {
             try {
-                const response = await axios.get(url + "users");
+                const response = await axios.get(url + "clients");
                 setUsers(response.data);
             } catch (error) {
                 console.log("Error fetching users: " + error);
@@ -26,6 +26,8 @@ function Login() {
         localStorage.setItem('selectedUserId', userId); // Guardar solo el ID en localStorage
     };
 
+    console.log(users);
+
     return (
         <>
             <h2>Selecciona tu cuenta:</h2>
@@ -33,8 +35,8 @@ function Login() {
                 <ul>
                     {users.map(user => (
                         <li key={user._id}>
-                            <button onClick={() => handleSelectUser(user.account_id)}>
-                                {user.name}
+                            <button onClick={() => handleSelectUser(user._id)}>
+                                {user.first_name}
                             </button>
                         </li>
                     ))}

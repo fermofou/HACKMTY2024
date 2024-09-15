@@ -4,14 +4,13 @@ import axios from 'axios'
 import EventCard from '../../components/groups/EventCard'
 import CapitalOneLogo from '../../assets/CapitalOneLogo.png'
 import PlusImg from '../../assets/createNewEventPlusImg.png'
+import { url } from '../../assets/constants/constants';
 
 import "./Groups.css"
 
 function Groups() {
 
     const userId = localStorage.getItem('selectedUserId');
-
-    const url = "http://localhost:3000/"
 
     const [events, setEvents] = useState([]);
 
@@ -47,8 +46,8 @@ function Groups() {
                 </div>
                 <div className='events-container'>
                         {events.map((event, index) => (
-                            <li key={`${event.event_id}-${index}`}>
-                                <Link to={`/group/${event.event_id}`}>
+                            <li key={`${event._id}-${index}`}>
+                                <Link to={`/group/${event._id}`}>
                                     <EventCard number={(index % 5) + 1} event={event} />
                                 </Link>
                             </li>

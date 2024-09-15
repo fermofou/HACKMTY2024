@@ -13,8 +13,6 @@ const findParticipant = (user_id, event) => {
 
 const ContributionCard = ({event, event_id, account_id}) => {
 
-  const userId = localStorage.getItem('selectedUserId');
-  
   const [currentContribution, setCurrentContribution] = useState(findParticipant(userId, event).contribution);
   const goalContribution = Math.round(event.goal * event.participants[0].percentage, 0);
   const [deposit, setDeposit] = useState('');
