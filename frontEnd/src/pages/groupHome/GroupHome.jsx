@@ -7,7 +7,6 @@ import ParticipantCard from "../../components/groupHomeComponents/ParticipantCar
 import { url } from "../../assets/constants/constants";
 
 import "./GroupHome.css";
-import SavingsCard from '../../components/groupHome/SavingsCard.jsx';
 
 function GroupHome() {
   const { groupId } = useParams();

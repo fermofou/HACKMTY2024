@@ -21,12 +21,12 @@ function GroupSavings() {
     <div className="savings-card">
       <h2>Expected savings</h2>
       <p className="savings-amount">$ 100,000.00</p>
-      <p className="savings-detail">Over the next 13 months</p>
       <div className="chart">
         <div className="bar"></div>
         <div className="bar"></div>
         <div className="bar"></div>
       </div>
+      <p className="savings-detail">Over the next 13 months</p>
     </div>
   </>);
 }

@@ -24,10 +24,14 @@
 }
 
 .chart {
-
+  display: flex;
+  justify-content: space-between;
+  height: 100px;
+  gap: 10px;
 }
 
 .bar {
   height: 100px;
+  flex: 1;
   background: blue;
 }

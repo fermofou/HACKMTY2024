@@ -20,3 +20,21 @@
     font-weight: 600;
     /* position: fixed; */
 }
+
+.event-card-bottom-right {
+    display: flex;
+    gap: 35px;
+  }
+  
+  .event-card-savings-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+  
+  .event-card-savings-link img {
+    width: 1.7rem;
+    height: 1.7rem;
+    margin: 0;
+  }
