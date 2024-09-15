@@ -46,8 +46,8 @@
   padding: 20px;
   font-family: Albert Sans;
   color: #919191;
-  min-height: 200px;
-  max-height: 230px; /* Limiting the height to make it scrollable */
+  min-height: 280px;
+  max-height: 350px; /* Limiting the height to make it scrollable */
   overflow-y: auto; /* Enable vertical scrolling when content exceeds the height */
 }
 

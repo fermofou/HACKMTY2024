@@ -5,11 +5,12 @@
   box-shadow: var(--box-shadow-default);
   background-color: var(--text-color-white);
 
-  p, h2 {
-      margin: 0;
-      padding: 0;
-      color: var(--text-color-blue);
-      width: fit-content;
+  p,
+  h2 {
+    margin: 0;
+    padding: 0;
+    color: var(--text-color-blue);
+    width: fit-content;
   }
 }
 
@@ -24,10 +25,19 @@
 }
 
 .chart {
-
+  display: flex;
+  justify-content: space-between;
+  height: 100px;
+  gap: 10px;
 }
 
 .bar {
-  height: 100px;
-  background: blue;
+  margin-top: auto;
+  flex: 1;
+  background: rgb(57, 57, 156);
+  border-radius: 10px 10px 0 0;
+}
+
+.full-height {
+  height: calc(100vh - 100px);
 }
