@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./PeopleSelector.css"; // Import your CSS file
 import { url } from "../../assets/constants/constants";
 
-//const API_BASE = "https://hackmty2024.onrender.com"; // Replace with your actual API base URL
-const API_BASE = "http://localhost:3000"; // Replace with your actual API base URL
+const API_BASE = "https://hackmty2024.onrender.com"; // Replace with your actual API base URL
+//const API_BASE = "http://localhost:3000"; // Replace with your actual API base URL
 
 const PeopleSelector = ({ selectedPeople, setSelectedPeople }) => {
   const [people, setPeople] = useState([]);
