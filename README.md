@@ -4,7 +4,7 @@
 We were inspired by the common problems everyone faces when organizing group payments with friends, such as pooling money for events, trips, or gifts. We wanted a simple and efficient solution that would eliminate confusion and disorganization, allowing everyone to contribute without complications.
 
 ## Demo
-<iframe width="560" height="315" src="https://www.youtube.com/embed/E1RqnhSbVR4?si=lZaLWQbIFyALZrPB" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+https://www.youtube.com/watch?v=E1RqnhSbVR4
 
 ## What it does
 The app allows users to create shared money pools and generate a virtual card to facilitate group payments. It also offers the possibility of setting up shared savings accounts with a common goal, such as a trip. This way, each member can contribute in an organized and quick manner, keeping everything under control.
