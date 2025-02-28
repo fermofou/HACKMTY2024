@@ -5,7 +5,7 @@ We were inspired by the common problems everyone faces when organizing group pay
 
 ## Demo
 
-https://www.youtube.com/watch?v=E1RqnhSbVR4
+[![](https://markdown-videos-api.jorgenkh.no/youtube/E1RqnhSbVR4)](https://www.youtube.com/watch?v=E1RqnhSbVR4)
 
 
 ## What it does
